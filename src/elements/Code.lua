@@ -17,6 +17,7 @@ function Element:New(Config)
 		Locked = false,
 		CanCopied = Config.CanCopied ~= false,
 		OnCopy = Config.OnCopy,
+		ShowLineNumbers = Config.ShowLineNumbers or false,
 
 		Index = Config.Index,
 	}

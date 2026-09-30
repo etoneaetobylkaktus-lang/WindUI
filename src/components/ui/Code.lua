@@ -14,6 +14,32 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 		CodeFrame = nil,
 	}
 
+	-- Line numbers container (if enabled)
+	local LineNumbersLabel = nil
+	if Code.ShowLineNumbers then
+		LineNumbersLabel = New("TextLabel", {
+			Text = "",
+			TextColor3 = Color3.fromHex("#6C7086"),
+			TextTransparency = 0,
+			TextSize = Code.CodeSize,
+			TextWrapped = false,
+			LineHeight = 1.15,
+			RichText = false,
+			TextXAlignment = "Right",
+			Size = UDim2.new(0, 0, 0, 0),
+			BackgroundTransparency = 1,
+			AutomaticSize = "XY",
+		}, {
+			New("UIPadding", {
+				PaddingTop = UDim.new(0, CodeModule.Padding + 3),
+				PaddingLeft = UDim.new(0, CodeModule.Padding + 3),
+				PaddingRight = UDim.new(0, 8),
+				PaddingBottom = UDim.new(0, CodeModule.Padding + 3),
+			}),
+		})
+		LineNumbersLabel.Font = "Code"
+	end
+
 	local TextLabel = New("TextLabel", {
 		Text = "",
 		TextColor3 = Color3.fromHex("#CDD6F4"),
@@ -29,12 +55,28 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 	}, {
 		New("UIPadding", {
 			PaddingTop = UDim.new(0, CodeModule.Padding + 3),
-			PaddingLeft = UDim.new(0, CodeModule.Padding + 3),
+			PaddingLeft = UDim.new(0, Code.ShowLineNumbers and 8 or CodeModule.Padding + 3),
 			PaddingRight = UDim.new(0, CodeModule.Padding + 3),
 			PaddingBottom = UDim.new(0, CodeModule.Padding + 3),
 		}),
 	})
 	TextLabel.Font = "Code"
+
+	-- Container for line numbers + code
+	local CodeContentFrame = New("Frame", {
+		Size = UDim2.new(1, 0, 0, 0),
+		BackgroundTransparency = 1,
+		AutomaticSize = "XY",
+	}, Code.ShowLineNumbers and {
+		New("UIListLayout", {
+			Padding = UDim.new(0, 0),
+			FillDirection = "Horizontal",
+		}),
+		LineNumbersLabel,
+		TextLabel,
+	} or {
+		TextLabel,
+	})
 
 	local ScrollingFrame = New("ScrollingFrame", {
 		Size = UDim2.new(1, 0, 0, 0),
@@ -45,7 +87,7 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 		CanvasSize = UDim2.new(0, 0, 0, 0),
 		ScrollBarThickness = 0,
 	}, {
-		TextLabel,
+		CodeContentFrame,
 	})
 
 	local CopyButton = Code.CanCopied
@@ -54,21 +96,18 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 				Size = UDim2.new(0, 35, 0, 35),
 				Position = UDim2.new(1, -CodeModule.Padding / 2, 0, CodeModule.Padding / 2),
 				AnchorPoint = Vector2.new(1, 0),
-				Visible = Callback and true or false,
+				Visible = true,
 			}, {
 				Creator.NewRoundFrame(CodeModule.Radius - 4, "Squircle", {
-					-- ThemeTag = {
-					--     ImageColor3 = "Text",
-					-- },
 					ImageColor3 = Color3.fromHex("#ffffff"),
-					ImageTransparency = 1, -- .95
+					ImageTransparency = 0.95,
 					Size = UDim2.new(1, 0, 1, 0),
 					AnchorPoint = Vector2.new(0.5, 0.5),
 					Position = UDim2.new(0.5, 0, 0.5, 0),
 					Name = "Button",
 				}, {
 					New("UIScale", {
-						Scale = 1, -- .9
+						Scale = 1,
 					}),
 					New("ImageLabel", {
 						Image = Creator.Icon("copy")[1],
@@ -78,9 +117,6 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 						AnchorPoint = Vector2.new(0.5, 0.5),
 						Position = UDim2.new(0.5, 0, 0.5, 0),
 						Size = UDim2.new(0, 12, 0, 12),
-						-- ThemeTag = {
-						--     ImageColor3 = "Icon",
-						-- },
 						ImageColor3 = Color3.fromHex("#ffffff"),
 						ImageTransparency = 0.1,
 					}),
@@ -191,6 +227,19 @@ function Code.New(Code, Window, Parent, Callback, UIScale)
 
 	function CodeModule.Set(code)
 		TextLabel.Text = Highlighter.run(code, Code.CodeTheme)
+		
+		-- Update line numbers if enabled
+		if Code.ShowLineNumbers and LineNumbersLabel then
+			local lines = {}
+			local lineCount = 1
+			for _ in code:gmatch("[^\n]*\n?") do
+				if lineCount > 1 or code ~= "" then
+					table.insert(lines, tostring(lineCount))
+					lineCount = lineCount + 1
+				end
+			end
+			LineNumbersLabel.Text = table.concat(lines, "\n")
+		end
 	end
 
 	function CodeModule.Destroy()

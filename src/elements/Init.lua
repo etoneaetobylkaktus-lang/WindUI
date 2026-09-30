@@ -18,6 +18,7 @@ return {
 		HStack = require("./HStack"),
 		VStack = require("./VStack"),
 		Viewport = require("./Viewport"),
+		Chart = require("./Chart"),
 		--Video       = require("./Video"),
 	},
 	Load = function(tbl, Container, Elements, Window, WindUI, OnElementCreateFunction, ElementsModule, UIScale, Tab)

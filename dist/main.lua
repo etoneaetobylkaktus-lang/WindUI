@@ -4,7 +4,7 @@
     | |/ |/ / / _ \/ _  / /_/ // /  
     |__/|__/_/_//_/\_,_/\____/___/
     
-    v1.6.66  |  2026-07-29  |  Roblox UI Library for scripts
+    v1.6.66  |  2026-10-01  |  Roblox UI Library for scripts
     
     To view the source code, see the `src/` folder on the official GitHub repository.
     
@@ -20,12 +20,15 @@ Camera:Instance?,
 Interactive:boolean?,
 Height:number?,
 Focused:boolean,
+AutoRotate:boolean?,
+Lighting:{Brightness:number?,Color:Color3?,Range:number?}?,
+ShowGrid:boolean?,
 
 Window:any,
 WindUI:any,
 Tab:any,
 Parent:Instance,
-}local a a={cache={}, load=function(b)if not a.cache[b]then a.cache[b]={c=a[b]()}end return a.cache[b].c end}do function a.a()
+}local a={cache={}::any}do do local function __modImpl()
 
 local b
 
@@ -247,7 +250,7 @@ end)
 return r,m
 end
 
-return d end function a.b()
+return d end function a.a():typeof(__modImpl())local b=a.cache.a if not b then b={c=__modImpl()}a.cache.a=b end return b.c end end do local function __modImpl()
 
 
 
@@ -1967,7 +1970,7 @@ return{
 ["zodiac-scorpio"]="rbxassetid://113640924054631",
 ["zodiac-taurus"]="rbxassetid://123053219704400",
 ["zodiac-virgo"]="rbxassetid://99462994613661",
-}end function a.c()
+}end function a.b():typeof(__modImpl())local b=a.cache.b if not b then b={c=__modImpl()}a.cache.b=b end return b.c end end do local function __modImpl()
 
 
 
@@ -9303,7 +9306,7 @@ return{
 ["zip-file-line-duotone"]="rbxassetid://130242676531637",
 ["zip-file-linear"]="rbxassetid://102428358345128",
 ["zip-file-outline"]="rbxassetid://134842241804608",
-}end function a.d()
+}end function a.c():typeof(__modImpl())local b=a.cache.c if not b then b={c=__modImpl()}a.cache.c=b end return b.c end end do local function __modImpl()
 
 
 
@@ -14311,7 +14314,7 @@ ImageRectSize=Vector2.new(96,96),
 Image=10,
 },
 }
-}end function a.e()
+}end function a.d():typeof(__modImpl())local b=a.cache.d if not b then b={c=__modImpl()}a.cache.d=b end return b.c end end do local function __modImpl()
 
 
 
@@ -16680,7 +16683,7 @@ ImageRectPosition=Vector2.new(0,256),
 ImageRectSize=Vector2.new(128,128),
 },
 }
-}end function a.f()
+}end function a.e():typeof(__modImpl())local b=a.cache.e if not b then b={c=__modImpl()}a.cache.e=b end return b.c end end do local function __modImpl()
 
 
 
@@ -23670,7 +23673,7 @@ return{
 "rbxassetid://119287314704938",zrButtonRoundedtopHorizontalFill=
 "rbxassetid://137388293496371",zzz=
 "rbxassetid://80729085783608",
-}end function a.g()
+}end function a.f():typeof(__modImpl())local b=a.cache.f if not b then b={c=__modImpl()}a.cache.f=b end return b.c end end do local function __modImpl()
 
 
 
@@ -24456,7 +24459,7 @@ return{
 "rbxassetid://116696831480300",
 ["xmark-shape"]="rbxassetid://113332623964226",
 ["xmark-shape-fill"]="rbxassetid://102835594333260",
-}end function a.h()
+}end function a.g():typeof(__modImpl())local b=a.cache.g if not b then b={c=__modImpl()}a.cache.g=b end return b.c end end do local function __modImpl()
 
 
 
@@ -24506,22 +24509,22 @@ IconThemeTag=nil,
 Icons={
 lucide=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/lucide/dist/Icons.lua"
-)()or a.load'b',
+)()or a.b(),
 solar=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/solar/dist/Icons.lua"
-)()or a.load'c',
+)()or a.c(),
 craft=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/craft/dist/Icons.lua"
-)()or a.load'd',
+)()or a.d(),
 geist=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/geist/dist/Icons.lua"
-)()or a.load'e',
+)()or a.e(),
 sfsymbols=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/sfsymbols/dist/Icons.lua"
-)()or a.load'f',
+)()or a.f(),
 gravity=IsExploit()and Loadstring(
 Get"https://raw.githubusercontent.com/Footagesus/Icons/refs/heads/main/gravity/dist/Icons.lua"
-)()or a.load'g',
+)()or a.g(),
 },
 }
 
@@ -24721,7 +24724,7 @@ end
 return h
 end
 
-return f end function a.i()
+return f end function a.h():typeof(__modImpl())local b=a.cache.h if not b then b={c=__modImpl()}a.cache.h=b end return b.c end end do local function __modImpl()
 
 return function(b)
 return{
@@ -24852,7 +24855,7 @@ LabelBackgroundTransparency=0.95,
 ViewportBackground="ElementBackground",
 ViewportBackgroundTransparency="ElementBackgroundTransparency",
 }
-end end function a.j()
+end end function a.i():typeof(__modImpl())local b=a.cache.i if not b then b={c=__modImpl()}a.cache.i=b end return b.c end end do local function __modImpl()
 
 local b=(cloneref or clonereference or function(b)
 return b
@@ -24864,13 +24867,13 @@ local f=b(game:GetService"TweenService")
 local g=b(game:GetService"LocalizationService")
 local h=b(game:GetService"HttpService")
 
-local i=a.load'a'local j=
+local i=a.a()local j=
 
 d.Heartbeat
 
 
 
-local l=a.load'h'
+local l=a.h()
 
 l.SetIconsType"lucide"
 
@@ -24985,7 +24988,7 @@ ThemeChangeCallbacks={},
 function p.Init(r)
 m=r
 
-p.ThemeFallbacks=a.load'i'(p)
+p.ThemeFallbacks=a.i()(p)
 
 p.UIScale=r.UIScale
 
@@ -25856,7 +25859,7 @@ end
 return nil,4
 end
 
-return p end function a.k()
+return p end function a.j():typeof(__modImpl())local b=a.cache.j if not b then b={c=__modImpl()}a.cache.j=b end return b.c end end do local function __modImpl()
 
 local b={}
 
@@ -25881,8 +25884,8 @@ end
 
 
 
-return b end function a.l()
-local b=a.load'j'
+return b end function a.k():typeof(__modImpl())local b=a.cache.k if not b then b={c=__modImpl()}a.cache.k=b end return b.c end end do local function __modImpl()
+local b=a.j()
 local d=b.New
 local e=b.Tween
 
@@ -26201,7 +26204,7 @@ end
 return h
 end
 
-return f end function a.m()
+return f end function a.l():typeof(__modImpl())local b=a.cache.l if not b then b={c=__modImpl()}a.cache.l=b end return b.c end end do local function __modImpl()
 
 
 
@@ -26484,7 +26487,7 @@ Copy=au,
 end
 
 
-return X end function a.n()
+return X end function a.m():typeof(__modImpl())local aa=a.cache.m if not aa then aa={c=__modImpl()}a.cache.m=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26570,7 +26573,7 @@ Copy=CopyLink,
 }
 end
 
-return ac end function a.o()
+return ac end function a.n():typeof(__modImpl())local aa=a.cache.n if not aa then aa={c=__modImpl()}a.cache.n=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26613,7 +26616,7 @@ Copy=CopyLink,
 }
 end
 
-return aa end function a.p()
+return aa end function a.o():typeof(__modImpl())local aa=a.cache.o if not aa then aa={c=__modImpl()}a.cache.o=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26675,7 +26678,7 @@ Copy=copyLink
 }
 end
 
-return aa end function a.q()
+return aa end function a.p():typeof(__modImpl())local aa=a.cache.p if not aa then aa={c=__modImpl()}a.cache.p=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26685,32 +26688,32 @@ Name="Platoboost",
 Icon="rbxassetid://75920162824531",
 Args={"ServiceId","Secret"},
 
-New=a.load'm'.New
+New=a.m().New
 },
 pandadevelopment={
 Name="Panda Development",
 Icon="panda",
 Args={"ServiceId"},
 
-New=a.load'n'.New
+New=a.n().New
 },
 luarmor={
 Name="Luarmor",
 Icon="rbxassetid://130918283130165",
 Args={"ScriptId","Discord"},
 
-New=a.load'o'.New
+New=a.o().New
 },
 junkiedevelopment={
 Name="Junkie Development",
 Icon="rbxassetid://106310347705078",
 Args={"ServiceId","ApiKey","Provider"},
 
-New=a.load'p'.New
+New=a.p().New
 },
 
 
-}end function a.r()
+}end function a.q():typeof(__modImpl())local aa=a.cache.q if not aa then aa={c=__modImpl()}a.cache.q=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -26745,11 +26748,11 @@ return[[
         "concurrently": "^9.2.0"
     }
 }
-]]end function a.s()
+]]end function a.r():typeof(__modImpl())local aa=a.cache.r if not aa then aa={c=__modImpl()}a.cache.r=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -26892,11 +26895,11 @@ end)
 return ao
 end
 
-return aa end function a.t()
+return aa end function a.s():typeof(__modImpl())local aa=a.cache.s if not aa then aa={c=__modImpl()}a.cache.s=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -27017,9 +27020,9 @@ end
 return ar
 end
 
-return aa end function a.u()
+return aa end function a.t():typeof(__modImpl())local aa=a.cache.t if not aa then aa={c=__modImpl()}a.cache.t=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 local ac=aa.Tween
 
@@ -27198,19 +27201,19 @@ end
 return aj
 end
 
-return ad end function a.v()
+return ad end function a.u():typeof(__modImpl())local aa=a.cache.u if not aa then aa={c=__modImpl()}a.cache.u=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
-local ae=a.load's'.New
-local af=a.load't'.New
+local ae=a.s().New
+local af=a.t().New
 
 function aa.new(ag,ah,ai,aj)
-local ak=a.load'u'
+local ak=a.u()
 local al=ak.Create(true,"Popup",ag.Window,ag.WindUI,ag.WindUI.ScreenGui.KeySystem)
 
 local am={}
@@ -27706,7 +27709,7 @@ aA.Position=UDim2.new(1,0,0.5,0)
 al:Open()
 end
 
-return aa end function a.w()
+return aa end function a.v():typeof(__modImpl())local aa=a.cache.v if not aa then aa={c=__modImpl()}a.cache.v=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -27728,18 +27731,18 @@ local ab=aa(game:GetService"Workspace").CurrentCamera.ViewportSize.Y
 return map(ab,0,2560,8,56)
 end
 
-return{viewportPointToWorld,getOffset}end function a.x()
+return{viewportPointToWorld,getOffset}end function a.w():typeof(__modImpl())local aa=a.cache.w if not aa then aa={c=__modImpl()}a.cache.w=aa end return aa.c end end do local function __modImpl()
 
 
 
 local aa=(cloneref or clonereference or function(aa)return aa end)
 
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 
 
-local ad,ae=unpack(a.load'w')
+local ad,ae=unpack(a.w())
 local af=Instance.new("Folder",aa(game:GetService"Workspace").CurrentCamera)
 
 
@@ -27875,11 +27878,11 @@ ah.Frame=ak
 ah.Model=aj
 
 return ah
-end end function a.y()
+end end function a.x():typeof(__modImpl())local aa=a.cache.x if not aa then aa={c=__modImpl()}a.cache.x=aa end return aa.c end end do local function __modImpl()
 
 
-local aa=a.load'j'
-local ab=a.load'x'
+local aa=a.j()
+local ab=a.x()
 
 local ac=aa.New
 
@@ -27999,7 +28002,7 @@ ae.SetVisibility=af.SetVisibility
 end
 
 return ae,af
-end end function a.z()
+end end function a.y():typeof(__modImpl())local aa=a.cache.y if not aa then aa={c=__modImpl()}a.cache.y=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -28007,9 +28010,9 @@ local aa=(cloneref or clonereference or function(aa)return aa end)
 
 
 local ab={
-AcrylicBlur=a.load'x',
+AcrylicBlur=a.x(),
 
-AcrylicPaint=a.load'y',
+AcrylicPaint=a.y(),
 }
 
 function ab.init()
@@ -28056,11 +28059,11 @@ registerDefaults()
 ab.Enable()
 end
 
-return ab end function a.A()
+return ab end function a.z():typeof(__modImpl())local aa=a.cache.z if not aa then aa={c=__modImpl()}a.cache.z=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -28077,7 +28080,7 @@ Buttons=ae.Buttons,
 IconSize=22,
 }
 
-local ah=a.load'u'
+local ah=a.u()
 local ai=ah.Create(true,"Popup",ae.WindUI.Window,ae.WindUI,af)
 
 local aj=200
@@ -28238,7 +28241,7 @@ PaddingBottom=UDim.new(0,16),
 }),
 })
 
-local as=a.load's'.New
+local as=a.s().New
 
 for at,au in next,ag.Buttons do
 as(au.Title,au.Icon,au.Callback,au.Variant,aq,ai)
@@ -28250,7 +28253,7 @@ ai:Open()
 return ag
 end
 
-return aa end function a.B()
+return aa end function a.A():typeof(__modImpl())local aa=a.cache.A if not aa then aa={c=__modImpl()}a.cache.A=aa end return aa.c end end do local function __modImpl()
 return function(aa,ab)
 return{
 Dark={
@@ -28630,11 +28633,11 @@ Button=aa:Gradient({
 Icon=Color3.fromHex"#ffffff",
 },
 }
-end end function a.C()
+end end function a.B():typeof(__modImpl())local aa=a.cache.B if not aa then aa={c=__modImpl()}a.cache.B=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New local ad=
 ab.Tween
 
@@ -28721,7 +28724,7 @@ am,
 return an
 end
 
-return aa end function a.D()
+return aa end function a.C():typeof(__modImpl())local aa=a.cache.C if not aa then aa={c=__modImpl()}a.cache.C=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -28730,7 +28733,7 @@ return ab
 end
 local ac=ab(game:GetService"UserInputService")
 
-local ad=a.load'j'
+local ad=a.j()
 local ae=ad.New
 
 function aa.New(af,ag,ah,ai,aj)
@@ -28870,11 +28873,11 @@ UpdateVisuals()
 return ak
 end
 
-return aa end function a.E()
+return aa end function a.D():typeof(__modImpl())local aa=a.cache.D if not aa then aa={c=__modImpl()}a.cache.D=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29039,7 +29042,7 @@ end)
 return ah
 end
 
-return aa end function a.F()
+return aa end function a.E():typeof(__modImpl())local aa=a.cache.E if not aa then aa={c=__modImpl()}a.cache.E=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)return aa end)
 
@@ -29420,10 +29423,10 @@ function ae.GetConfig(af,ag)
 return ae.Configs[ag]
 end
 
-return ae end function a.G()
+return ae end function a.F():typeof(__modImpl())local aa=a.cache.F if not aa then aa={c=__modImpl()}a.cache.F=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29705,10 +29708,10 @@ end
 
 
 
-return aa end function a.H()
+return aa end function a.G():typeof(__modImpl())local aa=a.cache.G if not aa then aa={c=__modImpl()}a.cache.G=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -29867,9 +29870,9 @@ end
 
 
 
-return aa end function a.I()
+return aa end function a.H():typeof(__modImpl())local aa=a.cache.H if not aa then aa={c=__modImpl()}a.cache.H=aa end return aa.c end end do local function __modImpl()
 game:GetService"ReplicatedStorage"
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 local ac=aa.NewRoundFrame
 local ad=aa.Tween
@@ -29880,7 +29883,7 @@ end)
 
 ae(game:GetService"UserInputService")
 
-local af=a.load'E'
+local af=a.E()
 
 local function Color3ToHSB(ag)
 local ah,ai,aj=ag.R,ag.G,ag.B
@@ -30584,14 +30587,14 @@ end
 
 
 return ah
-end end function a.J()
+end end function a.I():typeof(__modImpl())local aa=a.cache.I if not aa then aa={c=__modImpl()}a.cache.I=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ab=aa.New
 
 local ac={}
 
-local ad=a.load's'.New
+local ad=a.s().New
 
 function ac.New(ae,af)
 af.Hover=false
@@ -30606,7 +30609,7 @@ Desc=af.Desc or nil,
 
 Locked=af.Locked or false,
 }
-local ah=a.load'I'(af)
+local ah=a.I()(af)
 
 ag.ParagraphFrame=ah
 if af.Buttons and#af.Buttons>0 then
@@ -30641,9 +30644,9 @@ end
 return ag.__type,ag
 end
 
-return ac end function a.K()
+return ac end function a.J():typeof(__modImpl())local aa=a.cache.J if not aa then aa={c=__modImpl()}a.cache.J=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local ab=
+local aa=a.j()local ab=
 aa.New
 
 local ac={}
@@ -30667,7 +30670,7 @@ UIElements={},
 
 local ag=true
 
-af.ButtonFrame=a.load'I'{
+af.ButtonFrame=a.I(){
 Title=af.Title,
 Desc=af.Desc,
 Parent=ae.Parent,
@@ -30750,11 +30753,11 @@ end)
 return af.__type,af
 end
 
-return ac end function a.L()
+return ac end function a.K():typeof(__modImpl())local aa=a.cache.K if not aa then aa={c=__modImpl()}a.cache.K=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'
+local ab=a.j()
 local ac=ab.New
 local ad=ab.Tween
 
@@ -31158,11 +31161,11 @@ end
 return ap,am
 end
 
-return aa end function a.M()
+return aa end function a.L():typeof(__modImpl())local aa=a.cache.L if not aa then aa={c=__modImpl()}a.cache.L=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local ab=a.load'j'local ac=
+local ab=a.j()local ac=
 ab.New
 local ad=ab.Tween
 
@@ -31259,13 +31262,13 @@ return an,ak
 end
 
 
-return aa end function a.N()
-local aa=a.load'j'local ab=
+return aa end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()local ab=
 aa.New local ac=
 aa.Tween
 
-local ad=a.load'L'.New
-local ae=a.load'M'.New
+local ad=a.L().New
+local ae=a.M().New
 
 local af={}
 
@@ -31283,7 +31286,7 @@ Type=ah.Type or"Toggle",
 Callback=ah.Callback or function()end,
 UIElements={},
 }
-ai.ToggleFrame=a.load'I'{
+ai.ToggleFrame=a.I(){
 Title=ai.Title,
 Desc=ai.Desc,
 
@@ -31402,7 +31405,7 @@ end
 return ai.__type,ai
 end
 
-return af end function a.O()
+return af end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -31411,7 +31414,7 @@ end)
 local ac=aa(game:GetService"UserInputService")
 local ad=aa(game:GetService"RunService")
 
-local ae=a.load'j'
+local ae=a.j()
 local af=ae.New
 local ag=ae.Tween
 
@@ -31510,7 +31513,7 @@ av.Size=UDim2.new(0,al.IconSize,0,al.IconSize)
 aw=aw+al.IconSize-2
 end
 end
-al.SliderFrame=a.load'I'{
+al.SliderFrame=a.I(){
 Title=al.Title,
 Desc=al.Desc,
 Parent=ak.Parent,
@@ -31604,7 +31607,7 @@ Visible=al.IsTextbox,
 
 local ax
 if al.IsTooltip then
-ax=a.load'H'.New(
+ax=a.H().New(
 ap,
 al.UIElements.SliderIcon.Frame.Thumb,
 true,
@@ -31827,9 +31830,9 @@ end)
 return al.__type,al
 end
 
-return ah end function a.P()
+return ah end function a.O():typeof(__modImpl())local aa=a.cache.O if not aa then aa={c=__modImpl()}a.cache.O=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ac=aa.New
 local ad=aa.Tween
 
@@ -31933,7 +31936,7 @@ end
 return tostring(math.floor(ar+0.5)).."%"
 end
 
-ao.ProgressBarFrame=a.load'I'{
+ao.ProgressBarFrame=a.I(){
 Title=ao.Title,
 Desc=ao.Desc,
 Parent=ag.Parent,
@@ -32106,7 +32109,7 @@ Update(ao.Value.Default,true)
 return ao.__type,ao
 end
 
-return ae end function a.Q()
+return ae end function a.P():typeof(__modImpl())local aa=a.cache.P if not aa then aa={c=__modImpl()}a.cache.P=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -32114,7 +32117,7 @@ end)
 
 local ac=aa(game:GetService"UserInputService")
 
-local ad=a.load'j'
+local ad=a.j()
 local ae=ad.New local af=
 ad.Tween
 
@@ -32123,7 +32126,7 @@ UICorner=6,
 UIPadding=8,
 }
 
-local ah=a.load'C'.New
+local ah=a.C().New
 
 function ag.New(ai,aj)
 local function NormalizeKeyCode(ak)
@@ -32159,7 +32162,7 @@ table.insert(al,Enum.KeyCode[NormalizeKeyCode"Escape"])
 
 local am=true
 
-ak.KeybindFrame=a.load'I'{
+ak.KeybindFrame=a.I(){
 Title=ak.Title,
 Desc=ak.Desc,
 Parent=aj.Parent,
@@ -32306,19 +32309,19 @@ end)
 return ak.__type,ak
 end
 
-return ag end function a.R()
+return ag end function a.Q():typeof(__modImpl())local aa=a.cache.Q if not aa then aa={c=__modImpl()}a.cache.Q=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local ac=
+local aa=a.j()local ac=
 aa.New local ad=
 aa.Tween
 
 local ae={
 UICorner=8,
 UIPadding=8,
-}local af=a.load's'
+}local af=a.s()
 
 .New
-local ag=a.load't'.New
+local ag=a.t().New
 
 function ae.New(ah,ai)
 local aj={
@@ -32340,7 +32343,7 @@ Width=150,
 
 local ak=true
 
-aj.InputFrame=a.load'I'{
+aj.InputFrame=a.I(){
 Title=aj.Title,
 Desc=aj.Desc,
 Parent=ai.Parent,
@@ -32416,9 +32419,9 @@ end
 return aj.__type,aj
 end
 
-return ae end function a.S()
+return ae end function a.R():typeof(__modImpl())local aa=a.cache.R if not aa then aa={c=__modImpl()}a.cache.R=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local ae=aa.New
 
 local af={}
@@ -32444,7 +32447,7 @@ ai
 return"Divider",{__type="Divider",ElementFrame=aj}
 end
 
-return af end function a.T()
+return af end function a.S():typeof(__modImpl())local aa=a.cache.S if not aa then aa={c=__modImpl()}a.cache.S=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
 local ae=(cloneref or clonereference or function(ae)
@@ -32457,9 +32460,9 @@ local ah=ae(game:GetService"Workspace").CurrentCamera local ai=
 
 workspace.CurrentCamera
 
-local aj=a.load't'.New
+local aj=a.t().New
 
-local ak=a.load'j'
+local ak=a.j()
 local al=ak.New
 local am=ak.Tween
 
@@ -32993,7 +32996,7 @@ end
 
 RecalculateCanvasSize()
 RecalculateListSize()
-else a.load'S'
+else a.S()
 :New{Parent=ap.UIElements.Menu.Frame.ScrollingFrame}
 end
 end
@@ -33126,7 +33129,7 @@ UpdatePosition
 return as
 end
 
-return aa end function a.U()
+return aa end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={c=__modImpl()}a.cache.T=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -33136,13 +33139,13 @@ aa(game:GetService"UserInputService")
 aa(game:GetService"Players").LocalPlayer:GetMouse()local ae=
 aa(game:GetService"Workspace").CurrentCamera
 
-local af=a.load'j'
+local af=a.j()
 local ag=af.New local ah=
 af.Tween
 
-local ai=a.load'C'.New local aj=a.load't'
+local ai=a.C().New local aj=a.t()
 .New
-local ak=a.load'T'.New local al=
+local ak=a.T().New local al=
 
 workspace.CurrentCamera
 
@@ -33186,7 +33189,7 @@ if ap.Values and typeof(ap.Value)=="number"then
 ap.Value=ap.Values[ap.Value]
 end
 
-ap.DropdownFrame=a.load'I'{
+ap.DropdownFrame=a.I(){
 Title=ap.Title,
 Desc=ap.Desc,
 Parent=ao.Parent,
@@ -33259,7 +33262,7 @@ end
 return ap.__type,ap
 end
 
-return am end function a.V()
+return am end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -33508,15 +33511,15 @@ end
 return table.concat(at)
 end
 
-return aa end function a.W()
+return aa end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
-local af=a.load'j'
+local af=a.j()
 local ag=af.New
 local ai=af.Tween
 
-local ak=a.load'V'
+local ak=a.V()
 
 function aa.New(al,am,an,ao,ap)
 local aq={
@@ -33526,7 +33529,33 @@ Padding=am.NewElements and am.ElementConfig.UIPadding+4 or am.ElementConfig.UIPa
 CodeFrame=nil,
 }
 
-local ar=ag("TextLabel",{
+
+local ar
+if al.ShowLineNumbers then
+ar=ag("TextLabel",{
+Text="",
+TextColor3=Color3.fromHex"#6C7086",
+TextTransparency=0,
+TextSize=al.CodeSize,
+TextWrapped=false,
+LineHeight=1.15,
+RichText=false,
+TextXAlignment="Right",
+Size=UDim2.new(0,0,0,0),
+BackgroundTransparency=1,
+AutomaticSize="XY",
+},{
+ag("UIPadding",{
+PaddingTop=UDim.new(0,aq.Padding+3),
+PaddingLeft=UDim.new(0,aq.Padding+3),
+PaddingRight=UDim.new(0,8),
+PaddingBottom=UDim.new(0,aq.Padding+3),
+}),
+})
+ar.Font="Code"
+end
+
+local as=ag("TextLabel",{
 Text="",
 TextColor3=Color3.fromHex"#CDD6F4",
 TextTransparency=0,
@@ -33541,14 +33570,30 @@ AutomaticSize="XY",
 },{
 ag("UIPadding",{
 PaddingTop=UDim.new(0,aq.Padding+3),
-PaddingLeft=UDim.new(0,aq.Padding+3),
+PaddingLeft=UDim.new(0,al.ShowLineNumbers and 8 or aq.Padding+3),
 PaddingRight=UDim.new(0,aq.Padding+3),
 PaddingBottom=UDim.new(0,aq.Padding+3),
 }),
 })
-ar.Font="Code"
+as.Font="Code"
 
-local as=ag("ScrollingFrame",{
+
+local at=ag("Frame",{
+Size=UDim2.new(1,0,0,0),
+BackgroundTransparency=1,
+AutomaticSize="XY",
+},al.ShowLineNumbers and{
+ag("UIListLayout",{
+Padding=UDim.new(0,0),
+FillDirection="Horizontal",
+}),
+ar,
+as,
+}or{
+as,
+})
+
+local au=ag("ScrollingFrame",{
 Size=UDim2.new(1,0,0,0),
 BackgroundTransparency=1,
 AutomaticCanvasSize=al.Height~=nil and"XY"or"X",
@@ -33557,23 +33602,20 @@ ElasticBehavior="Never",
 CanvasSize=UDim2.new(0,0,0,0),
 ScrollBarThickness=0,
 },{
-ar,
+at,
 })
 
-local at=al.CanCopied
+local av=al.CanCopied
 and ag("TextButton",{
 BackgroundTransparency=1,
 Size=UDim2.new(0,35,0,35),
 Position=UDim2.new(1,-aq.Padding/2,0,aq.Padding/2),
 AnchorPoint=Vector2.new(1,0),
-Visible=ao and true or false,
+Visible=true,
 },{
 af.NewRoundFrame(aq.Radius-4,"Squircle",{
-
-
-
 ImageColor3=Color3.fromHex"#ffffff",
-ImageTransparency=1,
+ImageTransparency=0.95,
 Size=UDim2.new(1,0,1,0),
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
@@ -33590,9 +33632,6 @@ BackgroundTransparency=1,
 AnchorPoint=Vector2.new(0.5,0.5),
 Position=UDim2.new(0.5,0,0.5,0),
 Size=UDim2.new(0,12,0,12),
-
-
-
 ImageColor3=Color3.fromHex"#ffffff",
 ImageTransparency=0.1,
 }),
@@ -33600,7 +33639,7 @@ ImageTransparency=0.1,
 })
 or nil
 
-local au,av=af.NewRoundFrame(aq.Radius,"SquircleOutline",{
+local aw,ax=af.NewRoundFrame(aq.Radius,"SquircleOutline",{
 Size=UDim2.new(1,0,1,0),
 
 
@@ -33610,7 +33649,7 @@ ImageTransparency=0.955,
 Visible=false,
 })
 
-local aw,ax=af.NewRoundFrame(aq.Radius,"Squircle-TL-TR",{
+local ay,az=af.NewRoundFrame(aq.Radius,"Squircle-TL-TR",{
 
 
 
@@ -33642,7 +33681,7 @@ FontFace=Font.new(af.Font,Enum.FontWeight.Medium),
 TextXAlignment="Left",
 BackgroundTransparency=1,
 TextTruncate="AtEnd",
-Size=UDim2.new(1,at and-20-(aq.Padding*2),0,0),
+Size=UDim2.new(1,av and-20-(aq.Padding*2),0,0),
 }),
 ag("UIPadding",{
 
@@ -33657,7 +33696,7 @@ VerticalAlignment="Center",
 }),
 })
 
-local ay,az=af.NewRoundFrame(aq.Radius,"Squircle",{
+local aA,aB=af.NewRoundFrame(aq.Radius,"Squircle",{
 
 
 
@@ -33669,76 +33708,89 @@ or UDim2.new(1,0,0,20+(aq.Padding*2)),
 AutomaticSize=al.Height~=nil and"None"or"Y",
 Parent=an,
 },{
-au,
+aw,
 ag("Frame",{
 BackgroundTransparency=1,
 Size=UDim2.new(1,0,al.Height~=nil and 1 or 0,0),
 AutomaticSize=al.Height~=nil and"None"or"Y",
 },{
-aw,
-as,
+ay,
+au,
 ag("UIListLayout",{
 Padding=UDim.new(0,0),
 FillDirection="Vertical",
 }),
 }),
-at,
+av,
 },nil,true)
 
-aq.CodeFrame=ay
-aq.CodeFrameModule=az
-aq.OutlineFrame=au
-aq.OutlineFrameModule=av
-aq.TopbarFrame=aw
-aq.TopbarFrameModule=ax
+aq.CodeFrame=aA
+aq.CodeFrameModule=aB
+aq.OutlineFrame=aw
+aq.OutlineFrameModule=ax
+aq.TopbarFrame=ay
+aq.TopbarFrameModule=az
 
-af.AddSignal(ar:GetPropertyChangedSignal"TextBounds",function()
+af.AddSignal(as:GetPropertyChangedSignal"TextBounds",function()
 if al.Height~=nil then
-as.Size=UDim2.new(1,0,1,al.Title~=nil and-(20+(aq.Padding*2))or nil)
+au.Size=UDim2.new(1,0,1,al.Title~=nil and-(20+(aq.Padding*2))or nil)
 else
-as.Size=
-UDim2.new(1,0,0,(ar.TextBounds.Y/(ap or 1))+((aq.Padding+3)*2))
+au.Size=
+UDim2.new(1,0,0,(as.TextBounds.Y/(ap or 1))+((aq.Padding+3)*2))
 end
 end)
 
-function aq.Set(aA)
-ar.Text=ak.run(aA,al.CodeTheme)
+function aq.Set(b)
+as.Text=ak.run(b,al.CodeTheme)
+
+
+if al.ShowLineNumbers and ar then
+local d={}
+local f=1
+for g in b:gmatch"[^\n]*\n?"do
+if f>1 or b~=""then
+table.insert(d,tostring(f))
+f=f+1
+end
+end
+ar.Text=table.concat(d,"\n")
+end
 end
 
 function aq.Destroy()
-ay:Destroy()
+aA:Destroy()
 aq=nil
 end
 
 aq.Set(al.Code)
 
-if at then
-af.AddSignal(at.InputBegan,function(aA:InputObject)
+if av then
+af.AddSignal(av.InputBegan,function(b:InputObject)
 if
-aA.UserInputType==Enum.UserInputType.MouseButton1
-or aA.UserInputType==Enum.UserInputType.Touch
+b.UserInputType==Enum.UserInputType.MouseButton1
+or b.UserInputType==Enum.UserInputType.Touch
 then
-ai(at.Button,0.05,{ImageTransparency=0.95}):Play()
-ai(at.Button.UIScale,0.05,{Scale=0.9}):Play()
+ai(av.Button,0.05,{ImageTransparency=0.95}):Play()
+ai(av.Button.UIScale,0.05,{Scale=0.9}):Play()
 end
 end)
-af.AddSignal(at.InputEnded,function()
-ai(at.Button,0.08,{ImageTransparency=1}):Play()
-ai(at.Button.UIScale,0.08,{Scale=1}):Play()
+af.AddSignal(av.InputEnded,function()
+ai(av.Button,0.08,{ImageTransparency=1}):Play()
+ai(av.Button.UIScale,0.08,{Scale=1}):Play()
 end)
-af.AddSignal(at.MouseButton1Click,function()
+af.AddSignal(av.MouseButton1Click,function()
 if ao then
 ao()
-local aA=af.Icon"check"
-at.Button.ImageLabel.Image=aA[1]
-at.Button.ImageLabel.ImageRectSize=aA[2].ImageRectSize
-at.Button.ImageLabel.ImageRectOffset=aA[2].ImageRectPosition
+local b=af.Icon"check"
+av.Button.ImageLabel.Image=b[1]
+av.Button.ImageLabel.ImageRectSize=b[2].ImageRectSize
+av.Button.ImageLabel.ImageRectOffset=b[2].ImageRectPosition
 
 task.delay(1,function()
-local aB=af.Icon"copy"
-at.Button.ImageLabel.Image=aB[1]
-at.Button.ImageLabel.ImageRectSize=aB[2].ImageRectSize
-at.Button.ImageLabel.ImageRectOffset=aB[2].ImageRectPosition
+local d=af.Icon"copy"
+av.Button.ImageLabel.Image=d[1]
+av.Button.ImageLabel.ImageRectSize=d[2].ImageRectSize
+av.Button.ImageLabel.ImageRectOffset=d[2].ImageRectPosition
 end)
 end
 end)
@@ -33747,13 +33799,13 @@ end
 return aq
 end
 
-return aa end function a.X()
+return aa end function a.W():typeof(__modImpl())local aa=a.cache.W if not aa then aa={c=__modImpl()}a.cache.W=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'local af=
+local aa=a.j()local af=
 aa.New
 
 
-local ag=a.load'W'
+local ag=a.W()
 
 local ai={}
 
@@ -33768,6 +33820,7 @@ CodeTheme=al.CodeTheme,
 Locked=false,
 CanCopied=al.CanCopied~=false,
 OnCopy=al.OnCopy,
+ShowLineNumbers=al.ShowLineNumbers or false,
 
 Index=al.Index,
 }
@@ -33849,9 +33902,9 @@ am.ElementFrame=ao.CodeFrame
 return am.__type,am
 end
 
-return ai end function a.Y()
+return ai end function a.X():typeof(__modImpl())local aa=a.cache.X if not aa then aa={c=__modImpl()}a.cache.X=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New local ag=
 aa.Tween
 
@@ -33868,8 +33921,8 @@ al.RenderStepped
 local ao=am.LocalPlayer
 local ap=ao:GetMouse()
 
-local aq=a.load's'.New
-local ar=a.load't'.New
+local aq=a.s().New
+local ar=a.t().New
 
 local as={
 UICorner=9,
@@ -33903,7 +33956,7 @@ end
 
 az:SetHSVFromRGB(az.Default)
 
-local b=a.load'u'
+local b=a.u()
 local d=b.Create(nil,"Dialog",aw,ax,aw.UIElements.Main.Main)
 
 az.ColorpickerFrame=d
@@ -34646,7 +34699,7 @@ local ax=true
 
 
 
-aw.ColorpickerFrame=a.load'I'{
+aw.ColorpickerFrame=a.I(){
 Title=aw.Title,
 Desc=aw.Desc,
 Parent=av.Parent,
@@ -34724,9 +34777,9 @@ end)
 return aw.__type,aw
 end
 
-return as end function a.Z()
+return as end function a.Y():typeof(__modImpl())local aa=a.cache.Y if not aa then aa={c=__modImpl()}a.cache.Y=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 local ai=aa.Tween
 
@@ -35103,9 +35156,9 @@ end)
 return an.__type,an
 end
 
-return ak end function a._()
+return ak end function a.Z():typeof(__modImpl())local aa=a.cache.Z if not aa then aa={c=__modImpl()}a.cache.Z=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35120,77 +35173,218 @@ BackgroundTransparency=1,
 return"Space",{__type="Space",ElementFrame=am}
 end
 
-return ai end function a.aa()
-local aa=a.load'j'
+return ai end function a._():typeof(__modImpl())local aa=a.cache._ if not aa then aa={c=__modImpl()}a.cache._=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
+local ai=aa.Tween
 
-local ai={}
+game:GetService"UserInputService"
 
-local function ParseAspectRatio(ak)
-if type(ak)=="string"then
-local al,am=ak:match"(%d+):(%d+)"
-if al and am then
-return tonumber(al)/tonumber(am)
+local ak={}
+
+local function ParseAspectRatio(al)
+if type(al)=="string"then
+local am,an=al:match"(%d+):(%d+)"
+if am and an then
+return tonumber(am)/tonumber(an)
 end
-elseif type(ak)=="number"then
-return ak
+elseif type(al)=="number"then
+return al
 end
 return nil
 end
 
-function ai.New(ak,al)
-local am={
+function ak.New(al,am)
+local an={
 __type="Image",
-Image=al.Image or"",
-AspectRatio=al.AspectRatio or"16:9",
-Radius=al.Radius or al.Window.ElementConfig.UICorner,
+Image=am.Image or"",
+AspectRatio=am.AspectRatio or"16:9",
+Radius=am.Radius or am.Window.ElementConfig.UICorner,
+Lightbox=am.Lightbox or false,
 }
-local an=aa.Image(
-am.Image,
-am.Image,
-am.Radius,
-al.Window.Folder,
+
+local ao=aa.Image(
+an.Image,
+an.Image,
+an.Radius,
+am.Window.Folder,
 "Image",
 false
 )
-if an and an.Parent then
-an.Parent=al.Parent
-an.Size=UDim2.new(1,0,0,0)
-an.BackgroundTransparency=1
 
+if ao and ao.Parent then
+ao.Parent=am.Parent
+ao.Size=UDim2.new(1,0,0,0)
+ao.BackgroundTransparency=1
 
+local ap=ParseAspectRatio(an.AspectRatio)
+local aq
 
-
-
-
-
-
-
-
-
-
-local ao=ParseAspectRatio(am.AspectRatio)
-local ap
-
-if ao then
-ap=af("UIAspectRatioConstraint",{
-Parent=an,
-AspectRatio=ao,
+if ap then
+aq=af("UIAspectRatioConstraint",{
+Parent=ao,
+AspectRatio=ap,
 AspectType="ScaleWithParentSize",
 DominantAxis="Width"
 })
 end
 
-function am.Destroy(aq)
-an:Destroy()
+
+if an.Lightbox then
+local ar
+local as=false
+local at
+local au
+local av=1
+local aw=Vector2.new(0,0)
+
+local function CreateLightbox()
+local ax=am.Window.UIElements.Main.Main.Parent
+
+ar=af("Frame",{
+Name="LightboxOverlay",
+Size=UDim2.new(1,0,1,0),
+BackgroundColor3=Color3.fromHex"#000000",
+BackgroundTransparency=0.1,
+ZIndex=10000,
+Visible=false,
+Parent=ax,
+})
+
+local ay=af("TextButton",{
+Size=UDim2.new(0,40,0,40),
+Position=UDim2.new(1,-50,0,10),
+BackgroundColor3=Color3.fromHex"#ffffff",
+BackgroundTransparency=0.9,
+Text="",
+Parent=ar,
+},{
+af("UICorner",{
+CornerRadius=UDim.new(1,0)
+}),
+af("TextLabel",{
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Text="✕",
+TextSize=20,
+TextColor3=Color3.fromHex"#ffffff",
+Font=Enum.Font.GothamBold,
+})
+})
+
+local az=af("Frame",{
+Size=UDim2.new(0.9,0,0.9,0),
+Position=UDim2.new(0.5,0,0.5,0),
+AnchorPoint=Vector2.new(0.5,0.5),
+BackgroundTransparency=1,
+Parent=ar,
+ClipsDescendants=true,
+})
+
+local aA=af("ImageLabel",{
+Name="LightboxImage",
+Size=UDim2.new(1,0,1,0),
+Position=UDim2.new(0.5,0,0.5,0),
+AnchorPoint=Vector2.new(0.5,0.5),
+BackgroundTransparency=1,
+Image=ao.Image,
+ScaleType=Enum.ScaleType.Fit,
+Parent=az,
+})
+
+
+ay.MouseButton1Click:Connect(function()
+ar.Visible=false
+av=1
+aw=Vector2.new(0,0)
+aA.Size=UDim2.new(1,0,1,0)
+aA.Position=UDim2.new(0.5,0,0.5,0)
+end)
+
+
+ar.InputChanged:Connect(function(aB)
+if aB.UserInputType==Enum.UserInputType.MouseWheel then
+local b=aB.Position.Z*0.1
+av=math.clamp(av+b,0.5,5)
+
+ai(aA,0.1,{
+Size=UDim2.new(av,0,av,0)
+}):Play()
+end
+end)
+
+
+aA.InputBegan:Connect(function(aB)
+if aB.UserInputType==Enum.UserInputType.MouseButton1 or
+aB.UserInputType==Enum.UserInputType.Touch then
+as=true
+at=aB.Position
+au=aA.Position
+end
+end)
+
+aA.InputChanged:Connect(function(aB)
+if as and(aB.UserInputType==Enum.UserInputType.MouseMovement or
+aB.UserInputType==Enum.UserInputType.Touch)then
+local b=aB.Position-at
+local d=au.X.Scale+(b.X/az.AbsoluteSize.X)
+local f=au.Y.Scale+(b.Y/az.AbsoluteSize.Y)
+aA.Position=UDim2.new(d,0,f,0)
+end
+end)
+
+aA.InputEnded:Connect(function(aB)
+if aB.UserInputType==Enum.UserInputType.MouseButton1 or
+aB.UserInputType==Enum.UserInputType.Touch then
+as=false
+end
+end)
+
+
+ar.InputBegan:Connect(function(aB)
+if(aB.UserInputType==Enum.UserInputType.MouseButton1 or
+aB.UserInputType==Enum.UserInputType.Touch)then
+ar.Visible=false
+av=1
+aw=Vector2.new(0,0)
+aA.Size=UDim2.new(1,0,1,0)
+aA.Position=UDim2.new(0.5,0,0.5,0)
+end
+end)
+
+return ar
+end
+
+
+local ax=af("TextButton",{
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Text="",
+ZIndex=2,
+Parent=ao,
+})
+
+ax.MouseButton1Click:Connect(function()
+if not ar then
+CreateLightbox()
+end
+ar.Visible=true
+end)
+end
+
+function an.Destroy(ar)
+ao:Destroy()
+if LightboxOverlay then
+LightboxOverlay:Destroy()
+end
 end
 end
 
-return am.__type,am
+return an.__type,an
 end
 
-return ai end function a.ab()
-local aa=a.load'j'
+return ak end function a.aa():typeof(__modImpl())local aa=a.cache.aa if not aa then aa={c=__modImpl()}a.cache.aa=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35274,8 +35468,8 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ac()
-local aa=a.load'j'
+return ai end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end do local function __modImpl()
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35374,9 +35568,9 @@ end
 return am.__type,am
 end
 
-return ai end function a.ad()
+return ai end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.load'j'
+local aa=a.j()
 local af=aa.New
 
 local ai={}
@@ -35461,21 +35655,19 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ae()
+return ai end function a.ad():typeof(__modImpl())local aa=a.cache.ad if not aa then aa={c=__modImpl()}a.cache.ad=aa end return aa.c end end do local function __modImpl()
 local aa=(cloneref or clonereference or function(aa)
 return aa
 end)
 
 local af=aa(game:GetService"UserInputService")
+local ai=aa(game:GetService"RunService")
+local ak=aa(game:GetService"TweenService")
 
-local ai=a.load'j'
-local ak=ai.New
+local al=a.j()
+local am=al.New
 
-local al={}
-
-
-
-
+local an={}
 
 
 
@@ -35486,239 +35678,747 @@ local al={}
 
 
 
-function al.New(am,an:ConfigType__DARKLUA_TYPE_a)
-local ao={
+
+
+
+
+
+
+
+function an.New(ao,ap:ConfigType__DARKLUA_TYPE_a)
+local aq={
 __type="Viewport",
-Object=an.Object,
-Camera=an.Camera or Instance.new"Camera",
-Interactive=an.Interactive or false,
-Height=an.Height or 200,
-Focused=an.Focused~=false,
+Object=ap.Object,
+Camera=ap.Camera or Instance.new"Camera",
+Interactive=ap.Interactive or false,
+Height=ap.Height or 200,
+Focused=ap.Focused~=false,
+AutoRotate=ap.AutoRotate or false,
+PointLight=nil,
+GridFrame=nil,
 }
 
-local ap=false
-local aq=false
-local ar,as=0
+local ar=false
+local as=false
+local at=false
+local au,av=0
+local aw=0
 
-local at=ai.NewRoundFrame(an.Window.ElementConfig.UICorner,"Squircle",{
-Size=UDim2.new(1,0,0,ao.Height),
-Parent=an.Parent,
+local ax
+local ay=false
+local az
+local aA
+
+local aB=al.NewRoundFrame(ap.Window.ElementConfig.UICorner,"Squircle",{
+Size=UDim2.new(1,0,0,aq.Height),
+Parent=ap.Parent,
 ThemeTag={
 ImageColor3="ViewportBackground",
 ImageTransparency="ViewportBackgroundTransparency",
 },
 },{
-ak("CanvasGroup",{
+am("CanvasGroup",{
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
 },{
-ak("UICorner",{
-CornerRadius=UDim.new(0,an.Window.ElementConfig.UICorner),
+am("UICorner",{
+CornerRadius=UDim.new(0,ap.Window.ElementConfig.UICorner),
 }),
-ak("ViewportFrame",{
+am("ViewportFrame",{
 Name="Viewport",
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
-CurrentCamera=ao.Camera,
-Active=ao.Interactive,
+CurrentCamera=aq.Camera,
+Active=aq.Interactive,
 },{
-ao.Object,
+aq.Object,
 }),
+ap.ShowGrid and am("Frame",{
+Name="GridOverlay",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+ZIndex=10,
+},{
+am("UICorner",{
+CornerRadius=UDim.new(0,ap.Window.ElementConfig.UICorner),
+}),
+am("ImageLabel",{
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Image="rbxasset://textures/ui/GridLine.png",
+ImageTransparency=0.85,
+ScaleType=Enum.ScaleType.Tile,
+TileSize=UDim2.new(0,50,0,50),
+ImageColor3=Color3.fromRGB(255,255,255),
+}),
+})or nil,
 }),
 })
 
-local function IsTouchInsideViewport(au)
-local av=at.CanvasGroup.Viewport.AbsolutePosition
-local aw=at.CanvasGroup.Viewport.AbsoluteSize
+local function IsTouchInsideViewport(b)
+local d=aB.CanvasGroup.Viewport.AbsolutePosition
+local f=aB.CanvasGroup.Viewport.AbsoluteSize
 
-return au.X>=av.X
-and au.X<=av.X+aw.X
-and au.Y>=av.Y
-and au.Y<=av.Y+aw.Y
+return b.X>=d.X
+and b.X<=d.X+f.X
+and b.Y>=d.Y
+and b.Y<=d.Y+f.Y
 end
 
-local au=an.WindUI.GenerateGUID()
 
-ai.AddSignal(at.CanvasGroup.Viewport.MouseEnter,function()
-if ao.Interactive then
-an.Tab.UIElements.ContainerFrame.ScrollingEnabled=false
+if ap.Lighting then
+local b=Instance.new"PointLight"
+b.Brightness=ap.Lighting.Brightness or 1
+b.Color=ap.Lighting.Color or Color3.fromRGB(255,255,255)
+b.Range=ap.Lighting.Range or 30
+b.Parent=aB.CanvasGroup.Viewport
+aq.PointLight=b
+end
+
+
+if ap.ShowGrid then
+aq.GridFrame=aB.CanvasGroup:FindFirstChild"GridOverlay"
+end
+
+local b=ap.WindUI.GenerateGUID()
+
+al.AddSignal(aB.CanvasGroup.Viewport.MouseEnter,function()
+if aq.Interactive then
+ap.Tab.UIElements.ContainerFrame.ScrollingEnabled=false
 end
 end)
 
-ai.AddSignal(at.CanvasGroup.Viewport.InputEnded,function(av)
+al.AddSignal(aB.CanvasGroup.Viewport.InputEnded,function(d)
 if
-av.UserInputType==Enum.UserInputType.MouseMovement
-or av.UserInputType==Enum.UserInputType.Touch
+d.UserInputType==Enum.UserInputType.MouseMovement
+or d.UserInputType==Enum.UserInputType.Touch
 then
-an.Tab.UIElements.ContainerFrame.ScrollingEnabled=true
+ap.Tab.UIElements.ContainerFrame.ScrollingEnabled=true
 end
 end)
 
-ai.AddSignal(at.CanvasGroup.Viewport.InputBegan,function(av)
-if ao.Interactive then
+al.AddSignal(aB.CanvasGroup.Viewport.InputBegan,function(d)
+if aq.Interactive then
+local f=af:IsKeyDown(Enum.KeyCode.LeftShift)or af:IsKeyDown(Enum.KeyCode.RightShift)
+
 if
-(av.UserInputType==Enum.UserInputType.MouseButton1)
-or(av.UserInputType==Enum.UserInputType.Touch and not aq)
+(d.UserInputType==Enum.UserInputType.MouseButton1 and f)
+or(d.UserInputType==Enum.UserInputType.MouseButton2)
 then
-if an.WindUI.CurrentInput and an.WindUI.CurrentInput~=au then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
 return
 end
 
-an.WindUI.CurrentInput=au
-
-ap=true
-as=av.Position
-end
-end
-end)
-
-ai.AddSignal(af.InputEnded,function(av)
-if ao.Interactive then
-if
-av.UserInputType==Enum.UserInputType.MouseButton1
-or av.UserInputType==Enum.UserInputType.Touch
+ap.WindUI.CurrentInput=b
+as=true
+av=d.Position
+elseif
+(d.UserInputType==Enum.UserInputType.MouseButton1)
+or(d.UserInputType==Enum.UserInputType.Touch and not at)
 then
-if an.WindUI.CurrentInput and an.WindUI.CurrentInput~=au then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
 return
 end
 
-an.WindUI.CurrentInput=nil
+ap.WindUI.CurrentInput=b
 
-ap=false
+ar=true
+av=d.Position
+
+StopAutoRotate()
 end
 end
 end)
 
-ai.AddSignal(af.InputChanged,function(av)
-if ao.Interactive and ap and not aq then
+al.AddSignal(af.InputEnded,function(d)
+if aq.Interactive then
 if
-av.UserInputType==Enum.UserInputType.MouseMovement
-or av.UserInputType==Enum.UserInputType.Touch
+d.UserInputType==Enum.UserInputType.MouseButton1
+or d.UserInputType==Enum.UserInputType.MouseButton2
+or d.UserInputType==Enum.UserInputType.Touch
 then
-local aw=av.Position-as
-as=av.Position
-
-local ax=ao.Object:GetPivot().Position
-local ay=ao.Camera
-
-local az=CFrame.fromAxisAngle(Vector3.new(0,1,0),-aw.X*0.02)
-ay.CFrame=CFrame.new(ax)*az*CFrame.new(-ax)*ay.CFrame
-
-local aA=CFrame.fromAxisAngle(ay.CFrame.RightVector,-aw.Y*0.02)
-local aB=CFrame.new(ax)*aA*CFrame.new(-ax)*ay.CFrame
-
-if aB.UpVector.Y>0.1 then
-ay.CFrame=aB
-end
-end
-end
-end)
-
-ai.AddSignal(at.CanvasGroup.Viewport.InputChanged,function(av)
-if ao.Interactive then
-if av.UserInputType==Enum.UserInputType.MouseWheel then
-local aw=av.Position.Z*2
-ao.Camera.CFrame+=ao.Camera.CFrame.LookVector*aw
-end
-end
-end)
-
-ai.AddSignal(af.TouchPinch,function(av,aw,ax,ay)
-if not IsTouchInsideViewport(av[1])or not IsTouchInsideViewport(av[2])then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
 return
 end
-if ao.Interactive then
-if ay==Enum.UserInputState.Begin then
-aq=true
-ap=false
-ar=(av[1]-av[2]).Magnitude
-elseif ay==Enum.UserInputState.Change then
-if aq then
-local az=(av[1]-av[2]).Magnitude
-local aA=(az-ar)*0.03
-ar=az
-ao.Camera.CFrame+=ao.Camera.CFrame.LookVector*aA
+
+ap.WindUI.CurrentInput=nil
+
+ar=false
+as=false
+
+ScheduleAutoRotateResume()
 end
-elseif ay==Enum.UserInputState.End or ay==Enum.UserInputState.Cancel then
-aq=false
+end
+end)
+
+al.AddSignal(af.InputChanged,function(d)
+if aq.Interactive and as and not at then
+if
+d.UserInputType==Enum.UserInputType.MouseMovement
+or d.UserInputType==Enum.UserInputType.Touch
+then
+local f=d.Position-av
+av=d.Position
+
+local g=aq.Camera
+local h=0.01
+local i=g.CFrame.RightVector
+local l=g.CFrame.UpVector
+
+g.CFrame=g.CFrame-i*f.X*h+l*f.Y*h
+end
+elseif aq.Interactive and ar and not at then
+if
+d.UserInputType==Enum.UserInputType.MouseMovement
+or d.UserInputType==Enum.UserInputType.Touch
+then
+local f=d.Position-av
+av=d.Position
+
+local g=aq.Object:GetPivot().Position
+local h=aq.Camera
+
+local i=CFrame.fromAxisAngle(Vector3.new(0,1,0),-f.X*0.02)
+h.CFrame=CFrame.new(g)*i*CFrame.new(-g)*h.CFrame
+
+local l=CFrame.fromAxisAngle(h.CFrame.RightVector,-f.Y*0.02)
+local m=CFrame.new(g)*l*CFrame.new(-g)*h.CFrame
+
+if m.UpVector.Y>0.1 then
+h.CFrame=m
+end
+end
+end
+end)
+
+al.AddSignal(aB.CanvasGroup.Viewport.InputChanged,function(d)
+if aq.Interactive then
+if d.UserInputType==Enum.UserInputType.MouseWheel then
+local f=d.Position.Z*2
+aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*f
+
+StopAutoRotate()
+ScheduleAutoRotateResume()
+end
+end
+end)
+
+al.AddSignal(af.TouchPinch,function(d,f,g,h)
+if not IsTouchInsideViewport(d[1])or not IsTouchInsideViewport(d[2])then
+return
+end
+if aq.Interactive then
+if h==Enum.UserInputState.Begin then
+at=true
+ar=false
+as=false
+au=(d[1]-d[2]).Magnitude
+
+StopAutoRotate()
+elseif h==Enum.UserInputState.Change then
+if at then
+local i=(d[1]-d[2]).Magnitude
+local l=(i-au)*0.03
+au=i
+aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*l
+end
+elseif h==Enum.UserInputState.End or h==Enum.UserInputState.Cancel then
+at=false
+
+ScheduleAutoRotateResume()
+end
+end
+end)
+
+
+al.AddSignal(af.TouchStarted,function(d,f)
+if IsTouchInsideViewport(d.Position)and aq.Interactive then
+aw=aw+1
+if aw==2 and not at then
+as=true
+ar=false
+av=d.Position
+end
+end
+end)
+
+al.AddSignal(af.TouchEnded,function(d,f)
+if aq.Interactive then
+aw=math.max(0,aw-1)
+if aw<2 then
+as=false
 end
 end
 end)
 
 local function FocusCamera()
-local av=ao.Object:IsA"BasePart"and ao.Object.Size
-or select(2,ao.Object:GetBoundingBox(0))
-local aw=math.max(av.X,av.Y,av.Z)
-local ax=aw*2
-local ay=ao.Object:GetPivot().Position
+local d=aq.Object:IsA"BasePart"and aq.Object.Size
+or select(2,aq.Object:GetBoundingBox(0))
+local f=math.max(d.X,d.Y,d.Z)
+local g=f*2
+local h=aq.Object:GetPivot().Position
 
-ao.Camera.CFrame=
-CFrame.new(ay+Vector3.new(0,aw/2,ax),ay)
+aq.Camera.CFrame=
+CFrame.new(h+Vector3.new(0,f/2,g),h)
+aA=aq.Camera.CFrame
 end
 
-if ao.Focused then
+if aq.Focused then
 FocusCamera()
 end
 
-function ao.SetObject(av,aw,ax)
+local function StopAutoRotate()
 if ax then
-aw=aw:Clone()
+ax:Disconnect()
+ax=nil
 end
-if ao.Object then
-ao.Object:Destroy()
+ay=false
+if az then
+task.cancel(az)
+az=nil
 end
-
-ao.Object=aw
-ao.Object.Parent=at.CanvasGroup.Viewport
-end
-
-function ao.SetHeight(av,aw)
-at.Size=UDim2.new(1,0,0,aw)
 end
 
-function ao.Focus(av)
-if ao.Object then
+local function StartAutoRotate()
+if not aq.AutoRotate then return end
+
+StopAutoRotate()
+ay=true
+
+ax=ai.RenderStepped:Connect(function(d)
+if not ay or ar or at or as then
+return
+end
+
+local f=aq.Object:GetPivot().Position
+local g=CFrame.fromAxisAngle(Vector3.new(0,1,0),-0.5*d)
+aq.Camera.CFrame=CFrame.new(f)*g*CFrame.new(-f)*aq.Camera.CFrame
+end)
+end
+
+local function ScheduleAutoRotateResume()
+if not aq.AutoRotate then return end
+
+if az then
+task.cancel(az)
+end
+
+az=task.delay(2,function()
+StartAutoRotate()
+end)
+end
+
+if aq.AutoRotate then
+StartAutoRotate()
+end
+
+function aq.SetObject(d,f,g)
+if g then
+f=f:Clone()
+end
+if aq.Object then
+aq.Object:Destroy()
+end
+
+aq.Object=f
+aq.Object.Parent=aB.CanvasGroup.Viewport
+end
+
+function aq.SetHeight(d,f)
+aB.Size=UDim2.new(1,0,0,f)
+end
+
+function aq.Focus(d)
+if aq.Object then
 FocusCamera()
 end
 end
 
-function ao.SetCamera(av,aw)
-ao.Camera=aw
-at.CanvasGroup.Viewport.CurrentCamera=aw
+function aq.SetCamera(d,f)
+aq.Camera=f
+aB.CanvasGroup.Viewport.CurrentCamera=f
 end
 
-function ao.SetInteractive(av,aw)
-ao.Interactive=aw
-at.CanvasGroup.Viewport.Active=aw
+function aq.SetInteractive(d,f)
+aq.Interactive=f
+aB.CanvasGroup.Viewport.Active=f
 end
 
-ao.Main=at
-
-return ao.__type,ao
+function aq.SetLighting(d,f)
+if not aq.PointLight then
+local g=Instance.new"PointLight"
+g.Parent=aB.CanvasGroup.Viewport
+aq.PointLight=g
 end
 
-return al end function a.af()
+if f.Brightness then
+aq.PointLight.Brightness=f.Brightness
+end
+if f.Color then
+aq.PointLight.Color=f.Color
+end
+if f.Range then
+aq.PointLight.Range=f.Range
+end
+end
+
+function aq.SetGrid(d,f)
+if f and not aq.GridFrame then
+local g=am("Frame",{
+Name="GridOverlay",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+ZIndex=10,
+Parent=aB.CanvasGroup,
+},{
+am("UICorner",{
+CornerRadius=UDim.new(0,ap.Window.ElementConfig.UICorner),
+}),
+am("ImageLabel",{
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Image="rbxasset://textures/ui/GridLine.png",
+ImageTransparency=0.85,
+ScaleType=Enum.ScaleType.Tile,
+TileSize=UDim2.new(0,50,0,50),
+ImageColor3=Color3.fromRGB(255,255,255),
+}),
+})
+aq.GridFrame=g
+elseif not f and aq.GridFrame then
+aq.GridFrame:Destroy()
+aq.GridFrame=nil
+end
+end
+
+function aq.SetAutoRotate(d,f)
+aq.AutoRotate=f
+
+if f then
+StartAutoRotate()
+else
+StopAutoRotate()
+end
+end
+
+function aq.SetCameraPreset(d,f)
+if not aq.Object then return end
+
+local g=aq.Object:IsA"BasePart"and aq.Object.Size
+or select(2,aq.Object:GetBoundingBox(0))
+local h=math.max(g.X,g.Y,g.Z)
+local i=h*2
+local l=aq.Object:GetPivot().Position
+
+local m={
+Front=CFrame.new(l+Vector3.new(0,0,i),l),
+Back=CFrame.new(l+Vector3.new(0,0,-i),l),
+Left=CFrame.new(l+Vector3.new(-i,0,0),l),
+Right=CFrame.new(l+Vector3.new(i,0,0),l),
+Top=CFrame.new(l+Vector3.new(0,i,0),l),
+Bottom=CFrame.new(l+Vector3.new(0,-i,0),l),
+Isometric=CFrame.new(l+Vector3.new(i,i,i),l),
+}
+
+local p=m[f]
+if not p then return end
+
+StopAutoRotate()
+
+local r=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+local u=ak:Create(aq.Camera,r,{CFrame=p})
+u:Play()
+
+u.Completed:Connect(function()
+ScheduleAutoRotateResume()
+end)
+end
+
+function aq.ResetCamera(d)
+if not aA then return end
+
+StopAutoRotate()
+
+local f=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+local g=ak:Create(aq.Camera,f,{CFrame=aA})
+g:Play()
+
+g.Completed:Connect(function()
+ScheduleAutoRotateResume()
+end)
+end
+
+function aq.SetFOV(d,f)
+aq.Camera.FieldOfView=f
+end
+
+aq.Main=aB
+
+return aq.__type,aq
+end
+
+return an end function a.ae():typeof(__modImpl())local aa=a.cache.ae if not aa then aa={c=__modImpl()}a.cache.ae=aa end return aa.c end end do local function __modImpl()
+
+local aa=a.j()
+local af=aa.New
+
+local ai={}
+
+function ai.New(ak,al)
+local am={
+__type="Chart",
+Type=al.Type or"Line",
+Data=al.Data or{},
+Height=al.Height or 200,
+Colors=al.Colors or{Color3.fromRGB(56,189,248)},
+Title=al.Title or"Chart",
+Desc=al.Desc,
+UIElements={},
+}
+
+am.ChartFrame=a.I(){
+Title=am.Title,
+Desc=am.Desc,
+Parent=al.Parent,
+Window=al.Window,
+Justify="Start",
+Scalable=true,
+Tab=al.Tab,
+Index=al.Index,
+ElementTable=am,
+ParentConfig=al,
+Size=al.Size,
+Tags=al.Tags,
+}
+
+
+local an=af("Frame",{
+Name="ChartContainer",
+Parent=am.ChartFrame.UIElements.Main,
+BackgroundColor3=Color3.fromRGB(10,13,18),
+BackgroundTransparency=0,
+Size=UDim2.new(1,-20,0,am.Height),
+Position=UDim2.new(0,10,0,0),
+BorderSizePixel=0,
+},{
+af("UICorner",{
+CornerRadius=UDim.new(0,8),
+}),
+af("UIStroke",{
+Color=Color3.fromRGB(30,35,45),
+Thickness=1,
+Transparency=0.5,
+}),
+})
+
+am.UIElements.Container=an
+
+
+local function NormalizeData(ao)
+local ap={}
+local aq,ar=math.huge,-math.huge
+
+
+for as,at in ipairs(ao)do
+local au
+if typeof(at)=="table"then
+au=at.y or at[2]
+else
+au=at
+end
+
+aq=math.min(aq,au)
+ar=math.max(ar,au)
+end
+
+
+local as=ar-aq
+if as==0 then as=1 end
+
+for at,au in ipairs(ao)do
+local av,aw
+if typeof(au)=="table"then
+av=au.x or au[1]or at
+aw=au.y or au[2]
+else
+av=at
+aw=au
+end
+
+table.insert(ap,{
+x=av,
+y=(aw-aq)/as,
+originalY=aw,
+})
+end
+
+return ap,aq,ar
+end
+
+
+local function DrawChart()
+
+for ao,ap in ipairs(an:GetChildren())do
+if not ap:IsA"UICorner"and not ap:IsA"UIStroke"then
+ap:Destroy()
+end
+end
+
+if#am.Data==0 then
+return
+end local
+
+ao=NormalizeData(am.Data)
+local ap=an.AbsoluteSize.X
+local aq=an.AbsoluteSize.Y
+local ar=10
+
+if am.Type=="Bar"then
+
+local as=(ap-ar*2)/#ao
+local at=60
+if as>at then
+as=at
+end
+
+for au,av in ipairs(ao)do
+local aw=av.y*(aq-ar*2)
+local ax=ar+(au-1)*((ap-ar*2)/#ao)
+
+af("Frame",{
+Name="Bar"..au,
+Parent=an,
+BackgroundColor3=am.Colors[1]or Color3.fromRGB(56,189,248),
+Size=UDim2.new(0,as*0.8,0,aw),
+Position=UDim2.new(0,ax,1,-ar-aw),
+BorderSizePixel=0,
+},{
+af("UICorner",{
+CornerRadius=UDim.new(0,4),
+}),
+})
+end
+
+elseif am.Type=="Line"then
+
+for as=1,#ao-1 do
+local at=ao[as]
+local au=ao[as+1]
+
+local av=ar+((as-1)/(#ao-1))*(ap-ar*2)
+local aw=aq-ar-at.y*(aq-ar*2)
+local ax=ar+(as/(#ao-1))*(ap-ar*2)
+local ay=aq-ar-au.y*(aq-ar*2)
+
+
+local az=ax-av
+local aA=ay-aw
+local aB=math.sqrt(az*az+aA*aA)
+local b=math.deg(math.atan2(aA,az))
+
+
+af("Frame",{
+Name="Line"..as,
+Parent=an,
+BackgroundColor3=am.Colors[1]or Color3.fromRGB(56,189,248),
+Size=UDim2.new(0,aB,0,2),
+Position=UDim2.new(0,av,0,aw),
+AnchorPoint=Vector2.new(0,0.5),
+Rotation=b,
+BorderSizePixel=0,
+})
+
+
+af("Frame",{
+Name="Point"..as,
+Parent=an,
+BackgroundColor3=am.Colors[1]or Color3.fromRGB(56,189,248),
+Size=UDim2.new(0,6,0,6),
+Position=UDim2.new(0,av,0,aw),
+AnchorPoint=Vector2.new(0.5,0.5),
+BorderSizePixel=0,
+},{
+af("UICorner",{
+CornerRadius=UDim.new(1,0),
+}),
+})
+end
+
+
+if#ao>0 then
+local as=ao[#ao]
+local at=ar+(ap-ar*2)
+local au=aq-ar-as.y*(aq-ar*2)
+
+af("Frame",{
+Name="Point"..#ao,
+Parent=an,
+BackgroundColor3=am.Colors[1]or Color3.fromRGB(56,189,248),
+Size=UDim2.new(0,6,0,6),
+Position=UDim2.new(0,at,0,au),
+AnchorPoint=Vector2.new(0.5,0.5),
+BorderSizePixel=0,
+},{
+af("UICorner",{
+CornerRadius=UDim.new(1,0),
+}),
+})
+end
+end
+end
+
+
+task.defer(DrawChart)
+
+
+function am.SetData(ao,ap)
+am.Data=ap
+DrawChart()
+end
+
+function am.SetType(ao,ap)
+am.Type=ap
+DrawChart()
+end
+
+function am.SetColors(ao,ap)
+am.Colors=ap
+DrawChart()
+end
+
+
+an:GetPropertyChangedSignal"AbsoluteSize":Connect(function()
+DrawChart()
+end)
+
+am.ChartFrame.UIElements.Main.Size=UDim2.new(1,0,0,am.Height+20)
+
+return am.ChartFrame,am
+end
+
+return ai end function a.af():typeof(__modImpl())local aa=a.cache.af if not aa then aa={c=__modImpl()}a.cache.af=aa end return aa.c end end do local function __modImpl()
 
 return{
 Elements={
-Paragraph=a.load'J',
-Button=a.load'K',
-Toggle=a.load'N',
-Slider=a.load'O',
-ProgressBar=a.load'P',
-Keybind=a.load'Q',
-Input=a.load'R',
-Dropdown=a.load'U',
-Code=a.load'X',
-Colorpicker=a.load'Y',
-Section=a.load'Z',
-Divider=a.load'S',
-Space=a.load'_',
-Image=a.load'aa',
-Group=a.load'ab',
-HStack=a.load'ac',
-VStack=a.load'ad',
-Viewport=a.load'ae',
+Paragraph=a.J(),
+Button=a.K(),
+Toggle=a.N(),
+Slider=a.O(),
+ProgressBar=a.P(),
+Keybind=a.Q(),
+Input=a.R(),
+Dropdown=a.U(),
+Code=a.X(),
+Colorpicker=a.Y(),
+Section=a.Z(),
+Divider=a.S(),
+Space=a._(),
+Image=a.aa(),
+Group=a.ab(),
+HStack=a.ac(),
+VStack=a.ad(),
+Viewport=a.ae(),
+Chart=a.af(),
 
 },
 Load=function(aa,af,ai,ak,al,am,an,ao,ap)
@@ -35847,7 +36547,7 @@ end
 end
 end
 end,
-}end function a.ag()
+}end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -35858,11 +36558,11 @@ local af=game:GetService"Players"
 aa(game:GetService"UserInputService")
 local ai=af.LocalPlayer:GetMouse()
 
-local ak=a.load'j'
+local ak=a.j()
 local al=ak.New
 
-local am=a.load'H'.New
-local an=a.load'D'.New
+local am=a.H().New
+local an=a.D().New
 
 
 
@@ -36301,7 +37001,7 @@ end
 
 
 
-local aA=a.load'af'
+local aA=a.ag()
 
 aA.Load(
 ar,
@@ -36495,16 +37195,16 @@ ao.OnChangeFunc(aq)
 end
 end
 
-return ao end function a.ah()
+return ao end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
 
-local af=a.load'j'
+local af=a.j()
 local ai=af.New
 local ak=af.Tween
 
-local al=a.load'ag'
+local al=a.ah()
 
 function aa.New(am,an,ao,ap,aq)
 local ar={
@@ -36673,7 +37373,7 @@ return ar
 end
 
 
-return aa end function a.ai()
+return aa end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
 return{
 Tab="table-of-contents",
 Paragraph="type",
@@ -36686,7 +37386,7 @@ Dropdown="chevrons-up-down",
 Code="terminal",
 Colorpicker="palette",
 ProgressBar="chart-bar",
-}end function a.aj()
+}end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -36699,7 +37399,7 @@ Margin=8,
 Padding=9,
 }
 
-local ai=a.load'j'
+local ai=a.j()
 local ak=ai.New
 local al=ai.Tween
 
@@ -36711,7 +37411,7 @@ Radius=22,
 Width=400,
 MaxHeight=380,
 
-Icons=a.load'ai',
+Icons=a.aj(),
 }
 
 local aq=ak("TextBox",{
@@ -37226,7 +37926,7 @@ end)
 return ap
 end
 
-return af end function a.ak()
+return af end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -37240,19 +37940,19 @@ local ak=aa(game:GetService"Players")
 
 local al=workspace.CurrentCamera
 
-local am=a.load'z'
+local am=a.z()
 
-local an=a.load'j'
+local an=a.j()
 local ao=an.New
 local ap=an.Tween
 
 
-local aq=a.load'C'.New
-local ar=a.load's'.New
-local as=a.load'D'.New
-local at=a.load'E'
+local aq=a.C().New
+local ar=a.s().New
+local as=a.D().New
+local at=a.E()
 
-local au=a.load'F'
+local au=a.F()
 
 
 
@@ -38338,7 +39038,7 @@ end
 
 
 
-aw.OpenButtonMain=a.load'G'.New(aw)
+aw.OpenButtonMain=a.G().New(aw)
 
 task.spawn(function()
 if aw.Icon then
@@ -38902,8 +39602,8 @@ if aw.OpenButton and typeof(aw.OpenButton)=="table"then
 aw:EditOpenButton(aw.OpenButton)
 end
 
-local C=a.load'ag'
-local F=a.load'ah'
+local C=a.ah()
+local F=a.ai()
 local G=C.Init(aw,av.WindUI,av.WindUI.TooltipGui)
 G:OnChange(function(H)
 aw.CurrentTab=H
@@ -38977,7 +39677,7 @@ J,
 return L
 end
 
-local H=a.load'u'
+local H=a.u()
 function aw.Dialog(J,L)
 local M={
 Title=L.Title or"Dialog",
@@ -39360,7 +40060,7 @@ end)
 
 
 if not aw.HideSearchBar then
-local Q=a.load'aj'
+local Q=a.ak()
 local R=false
 
 
@@ -39449,14 +40149,14 @@ end
 
 
 return aw
-end end end
+end end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end end
 
 local aa={
 Window=nil,
 Theme=nil,
-Creator=a.load'j',
-LocalizationModule=a.load'k',
-NotificationModule=a.load'l',
+Creator=a.j(),
+LocalizationModule=a.k(),
+NotificationModule=a.l(),
 Themes=nil,
 Transparent=false,
 
@@ -39467,7 +40167,7 @@ UIScale=1,
 ConfigManager=nil,
 Version="0.0.0",
 
-Services=a.load'q',
+Services=a.q(),
 
 OnThemeChangeFunction=nil,
 
@@ -39529,12 +40229,12 @@ end)
 
 local ap=ak.LocalPlayer or nil
 
-local aq=ai:JSONDecode(a.load'r')
+local aq=ai:JSONDecode(a.r())
 if aq then
 aa.Version=aq.version
 end
 
-local ar=a.load'v'
+local ar=a.v()
 
 local as=aa.Creator
 
@@ -39543,7 +40243,7 @@ local at=as.New
 
 
 
-local au=a.load'z'
+local au=a.z()
 
 local av=protectgui or(syn and syn.protect_gui)or function()end
 
@@ -39745,10 +40445,10 @@ end
 
 function aa.Popup(az,aA)
 aA.WindUI=aa
-return a.load'A'.new(aA,aa.ScreenGui.Popups)
+return a.A().new(aA,aa.ScreenGui.Popups)
 end
 
-aa.Themes=a.load'B'(aa,as)
+aa.Themes=a.B()(aa,as)
 
 as.Themes=aa.Themes
 
@@ -39756,7 +40456,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(as.Language)
 
 function aa.CreateWindow(az,aA)
-local aB=a.load'ak'
+local aB=a.al()
 
 if not am:IsStudio()and writefile then
 if not isfolder"WindUI"then
