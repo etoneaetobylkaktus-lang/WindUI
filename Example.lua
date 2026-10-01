@@ -262,8 +262,8 @@ Social:Paragraph({
 	Desc = "Public channel metadata is fetched from t.me. Change ChannelUser to your channel username.",
 })
 local TelegramCard = Social:TelegramParagraph({
-	ChannelUser = "telegram",
-	Title = "Official Telegram channel",
+	ChannelUser = "yasosalpeniskakloh",
+	Title = "Наш Telegram-канал",
 	ButtonTitle = "Copy link and open Telegram",
 })
 Social:Button({ Title = "Refresh channel details", Callback = function() TelegramCard:Refresh() end })
