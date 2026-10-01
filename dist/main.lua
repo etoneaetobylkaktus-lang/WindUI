@@ -30686,6 +30686,11 @@ return ag and ag:gsub("%s+","")or nil
 end
 
 function ae.New(af,ag)
+ag.Hover=false
+ag.TextOffset=0
+ag.ParentConfig=ag
+ag.IsButtons=false
+
 local ah=tostring(ag.ChannelUser or""):gsub("^@","")
 if#ah<5 or#ah>32 or not ah:match"^[%w_]+$"then
 error"TelegramParagraph: ChannelUser must be a public Telegram channel username"

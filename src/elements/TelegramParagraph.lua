@@ -37,6 +37,11 @@ local function FormatCount(text)
 end
 
 function Element:New(Config)
+	Config.Hover = false
+	Config.TextOffset = 0
+	Config.ParentConfig = Config
+	Config.IsButtons = false
+
  local username = tostring(Config.ChannelUser or ""):gsub("^@", "")
  if #username < 5 or #username > 32 or not username:match("^[%w_]+$") then
   error("TelegramParagraph: ChannelUser must be a public Telegram channel username")
