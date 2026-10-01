@@ -30662,265 +30662,6 @@ end
 
 return ac end function a.J():typeof(__modImpl())local aa=a.cache.J if not aa then aa={c=__modImpl()}a.cache.J=aa end return aa.c end end do local function __modImpl()
 
-local aa=a.j()
-local ab=aa.New
-local ac=a.s().New
-
-game:GetService"Players"
-local ad=game:GetService"GuiService"
-
-local ae={}
-
-local function DecodeEntities(af)
-
-af=af:gsub("&amp;","&"):gsub("&quot;",'"'):gsub("&#39;","'")
-af=af:gsub("&lt;","<"):gsub("&gt;",">")
-af=af:gsub("&#(%d+);",function(ag)
-local ah=tonumber(ag)
-if ah and ah>0 and ah<=0x10FFFF and not(ah>=0xD800 and ah<=0xDFFF)then
-return utf8.char(ah)
-end
-return""
-end)
-return af
-end
-
-local function ReadMeta(af,ag)
-local ah=ag:gsub("([^%w])","%%%1")
-local ai=af:match('<meta property="'..ah..'" content="(.-)"')
-or af:match("<meta property='"..ah.."' content='(.-)'")
-or af:match('<meta name="'..ah..'" content="(.-)"')
-return ai and DecodeEntities(ai)
-end
-
-local function FormatCount(af)
-if not af then return nil end
-local ag=af:match"([%d%.%,]+%s*[KkMm]?)%s+subscribers?"
-or af:match"([%d%.%,]+%s*[KkMm]?)%s+members?"
-return ag and ag:gsub("%s+","")or nil
-end
-
-local function ReadCounter(af)
-local ag=af:match'class="counter_value"[^>]*>(.-)</span>'
-local ah=af:match'class="counter_type"[^>]*>(.-)</span>'
-if not ag or not ah then return nil end
-return DecodeEntities(ag:gsub("<[^>]->",""):gsub("%s+",""))
-.." "..DecodeEntities(ah:gsub("<[^>]->",""):gsub("^%s+",""):gsub("%s+$",""))
-end
-
-local function ReadTagText(af,ag)
-local ah=ag:gsub("([^%w])","%%%1")
-local ai=af:match('class="'..ah..'"[^>]*>[%s\n]*(.-)[%s\n]*</[^>]+>')
-return ai and DecodeEntities(ai:gsub("<[^>]->",""))or nil
-end
-
-local function ReadImageSource(af)
-local ag=af:match'class="tgme_page_photo_image"[^>]*>[%s\n]*<img[^>]+src="(.-)"'
-or af:match'class="tgme_page_photo_image"[^>]+src="(.-)"'
-return ag
-end
-
-function ae.New(af,ag)
-ag.Hover=false
-ag.TextOffset=0
-ag.ParentConfig=ag
-ag.IsButtons=false
-
-local ah=tostring(ag.ChannelUser or""):gsub("^@","")
-if#ah<5 or#ah>32 or not ah:match"^[%w_]+$"then
-error"TelegramParagraph: ChannelUser must be a public Telegram channel username"
-end
-
-local ai="https://t.me/"..ah
-local aj=a.I()(ag)
-local ak={
-__type="TelegramParagraph",
-Title=ag.Title or"Telegram",
-ChannelUser=ah,
-URL=ai,
-ParagraphFrame=aj,
-UIElements={},
-}
-
-local al=ab("Frame",{
-Name="TelegramChannelInfo",
-Size=UDim2.new(1,0,0,64),
-BackgroundTransparency=1,
-Parent=aj.UIElements.Container,
-},{
-ab("UIListLayout",{
-FillDirection=Enum.FillDirection.Horizontal,
-VerticalAlignment=Enum.VerticalAlignment.Center,
-Padding=UDim.new(0,12),
-}),
-})
-
-local am=aa.Image("",ah,0,ag.Window.Folder,"TelegramAvatar",false)
-am.Name="ChannelAvatar"
-am.Size=UDim2.fromOffset(52,52)
-am.LayoutOrder=1
-am.Parent=al
-ab("UICorner",{CornerRadius=UDim.new(1,0),Parent=am})
-
-local an=ab("Frame",{
-Name="ChannelDetails",
-BackgroundTransparency=1,
-Size=UDim2.new(1,-64,1,0),
-LayoutOrder=2,
-Parent=al,
-},{
-ab("UIListLayout",{
-FillDirection=Enum.FillDirection.Vertical,
-VerticalAlignment=Enum.VerticalAlignment.Center,
-Padding=UDim.new(0,3),
-}),
-})
-
-local ao=ab("TextLabel",{
-Name="ChannelTitle",
-Size=UDim2.new(1,0,0,23),
-BackgroundTransparency=1,
-Text="Loading Telegram channel...",
-TextXAlignment=Enum.TextXAlignment.Left,
-TextTruncate=Enum.TextTruncate.AtEnd,
-TextSize=16,
-Font=Enum.Font.GothamSemibold,
-ThemeTag={TextColor3="Text"},
-Parent=an,
-})
-
-local ap=ab("TextLabel",{
-Name="SubscriberCount",
-Size=UDim2.new(1,0,0,19),
-BackgroundTransparency=1,
-Text="@"..ah,
-TextXAlignment=Enum.TextXAlignment.Left,
-TextTruncate=Enum.TextTruncate.AtEnd,
-TextSize=13,
-Font=Enum.Font.Gotham,
-TextTransparency=0.2,
-ThemeTag={TextColor3="Text"},
-Parent=an,
-})
-
-local aq=ab("Frame",{
-Size=UDim2.new(1,0,0,38),
-BackgroundTransparency=1,
-Parent=aj.UIElements.Container,
-})
-
-local function OpenChannel()
-local ar=setclipboard or toclipboard
-if ar then
-pcall(ar,ai)
-end
-local as=pcall(function()
-ad:OpenBrowserWindow(ai)
-end)
-if not as then
-pcall(function()
-ad:OpenUrl(ai)
-end)
-end
-end
-
-local ar=ac(
-ag.ButtonTitle or"Open Telegram Channel",
-ag.ButtonIcon or"send",
-OpenChannel,
-"White",
-aq,
-nil,
-nil,
-ag.Window.NewElements and 999 or 10
-)
-ar.Size=UDim2.new(1,0,0,38)
-
-function ak.Open(as)
-OpenChannel()
-end
-
-function ak.SetChannelUser(as,at)
-at=tostring(at or""):gsub("^@","")
-if#at<5 or#at>32 or not at:match"^[%w_]+$"then
-return false,"ChannelUser must be a public Telegram channel username"
-end
-ah=at
-ak.ChannelUser=ah
-ak.URL="https://t.me/"..ah
-ak:Refresh()
-return true
-end
-
-function ak.Refresh(as)
-ao.Text="Loading Telegram channel..."
-ap.Text="@"..ah
-
-task.spawn(function()
-local at=aa.Request or request or http_request
-local au,av
-if at then
-au,av=pcall(function()
-return at{Url="https://t.me/s/"..ah,Method="GET"}
-end)
-elseif game.HttpGet then
-au,av=pcall(function()
-return game:HttpGet("https://t.me/s/"..ah)
-end)
-end
-
-local aw
-if au and type(av)=="string"then
-aw=av
-elseif au and type(av)=="table"then
-aw=av.Body or av.body
-end
-if type(aw)~="string"or not aw:find"telegram%.org"and not aw:find"tgme_page"then
-ao.Text="Telegram channel not verified"
-ap.Text="Could not confirm a public channel at @"..ah
-return
-end
-
-local ax=ReadMeta(aw,"og:title")
-or ReadTagText(aw,"tgme_channel_info_header_title")
-or aw:match'class="tgme_page_title"[^>]*>[%s\n]*(.-)[%s\n]*</div>'
-local ay=ReadMeta(aw,"og:description")or""
-local az=ReadMeta(aw,"og:image")or ReadImageSource(aw)
-local aA=FormatCount(ay)
-or ReadCounter(aw)
-or FormatCount(aw:match'class="tgme_channel_info_counters"[^>]*>(.-)</div>')
-or FormatCount(aw:match'class="tgme_page_extra"[^>]*>(.-)</div>')
-
-if ax then
-ax=ax:gsub("<[^>]->","")
-ao.Text=DecodeEntities(ax)
-ap.Text=aA and(aA.." subscribers · @"..ah)or("@"..ah)
-if az then
-local aB=aa.Image(az,ah,26,ag.Window.Folder,"TelegramAvatar",false)
-aB.Name="ChannelAvatar"
-aB.Size=UDim2.fromOffset(52,52)
-aB.LayoutOrder=1
-aB.Parent=al
-am:Destroy()
-am=aB
-end
-else
-ao.Text="Telegram channel not found"
-ap.Text="No public channel matched @"..ah
-end
-end)
-end
-
-function ak.Destroy(as)
-aj:Destroy()
-end
-
-ak:Refresh()
-return ak.__type,ak
-end
-
-return ae end function a.K():typeof(__modImpl())local aa=a.cache.K if not aa then aa={c=__modImpl()}a.cache.K=aa end return aa.c end end do local function __modImpl()
-
 local aa=a.j()local ab=
 aa.New
 
@@ -31028,7 +30769,7 @@ end)
 return af.__type,af
 end
 
-return ac end function a.L():typeof(__modImpl())local aa=a.cache.L if not aa then aa={c=__modImpl()}a.cache.L=aa end return aa.c end end do local function __modImpl()
+return ac end function a.K():typeof(__modImpl())local aa=a.cache.K if not aa then aa={c=__modImpl()}a.cache.K=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -31436,7 +31177,7 @@ end
 return ap,am
 end
 
-return aa end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
+return aa end function a.L():typeof(__modImpl())local aa=a.cache.L if not aa then aa={c=__modImpl()}a.cache.L=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -31537,13 +31278,13 @@ return an,ak
 end
 
 
-return aa end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
+return aa end function a.M():typeof(__modImpl())local aa=a.cache.M if not aa then aa={c=__modImpl()}a.cache.M=aa end return aa.c end end do local function __modImpl()
 local aa=a.j()local ab=
 aa.New local ac=
 aa.Tween
 
-local ad=a.M().New
-local ae=a.N().New
+local ad=a.L().New
+local ae=a.M().New
 
 local af={}
 
@@ -31680,7 +31421,7 @@ end
 return ai.__type,ai
 end
 
-return af end function a.O():typeof(__modImpl())local aa=a.cache.O if not aa then aa={c=__modImpl()}a.cache.O=aa end return aa.c end end do local function __modImpl()
+return af end function a.N():typeof(__modImpl())local aa=a.cache.N if not aa then aa={c=__modImpl()}a.cache.N=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -32105,7 +31846,7 @@ end)
 return al.__type,al
 end
 
-return ah end function a.P():typeof(__modImpl())local aa=a.cache.P if not aa then aa={c=__modImpl()}a.cache.P=aa end return aa.c end end do local function __modImpl()
+return ah end function a.O():typeof(__modImpl())local aa=a.cache.O if not aa then aa={c=__modImpl()}a.cache.O=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local ac=aa.New
@@ -32384,7 +32125,7 @@ Update(ao.Value.Default,true)
 return ao.__type,ao
 end
 
-return ae end function a.Q():typeof(__modImpl())local aa=a.cache.Q if not aa then aa={c=__modImpl()}a.cache.Q=aa end return aa.c end end do local function __modImpl()
+return ae end function a.P():typeof(__modImpl())local aa=a.cache.P if not aa then aa={c=__modImpl()}a.cache.P=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -32584,7 +32325,7 @@ end)
 return ak.__type,ak
 end
 
-return ag end function a.R():typeof(__modImpl())local aa=a.cache.R if not aa then aa={c=__modImpl()}a.cache.R=aa end return aa.c end end do local function __modImpl()
+return ag end function a.Q():typeof(__modImpl())local aa=a.cache.Q if not aa then aa={c=__modImpl()}a.cache.Q=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()local ac=
 aa.New local ad=
@@ -32694,7 +32435,7 @@ end
 return aj.__type,aj
 end
 
-return ae end function a.S():typeof(__modImpl())local aa=a.cache.S if not aa then aa={c=__modImpl()}a.cache.S=aa end return aa.c end end do local function __modImpl()
+return ae end function a.R():typeof(__modImpl())local aa=a.cache.R if not aa then aa={c=__modImpl()}a.cache.R=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local ae=aa.New
@@ -32722,7 +32463,7 @@ ai
 return"Divider",{__type="Divider",ElementFrame=aj}
 end
 
-return af end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={c=__modImpl()}a.cache.T=aa end return aa.c end end do local function __modImpl()
+return af end function a.S():typeof(__modImpl())local aa=a.cache.S if not aa then aa={c=__modImpl()}a.cache.S=aa end return aa.c end end do local function __modImpl()
 local aa={}
 
 local ae=(cloneref or clonereference or function(ae)
@@ -33271,7 +33012,7 @@ end
 
 RecalculateCanvasSize()
 RecalculateListSize()
-else a.T()
+else a.S()
 :New{Parent=ap.UIElements.Menu.Frame.ScrollingFrame}
 end
 end
@@ -33404,7 +33145,7 @@ UpdatePosition
 return as
 end
 
-return aa end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
+return aa end function a.T():typeof(__modImpl())local aa=a.cache.T if not aa then aa={c=__modImpl()}a.cache.T=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -33420,7 +33161,7 @@ af.Tween
 
 local ai=a.C().New local aj=a.t()
 .New
-local ak=a.U().New local al=
+local ak=a.T().New local al=
 
 workspace.CurrentCamera
 
@@ -33537,7 +33278,7 @@ end
 return ap.__type,ap
 end
 
-return am end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
+return am end function a.U():typeof(__modImpl())local aa=a.cache.U if not aa then aa={c=__modImpl()}a.cache.U=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -33786,7 +33527,7 @@ end
 return table.concat(at)
 end
 
-return aa end function a.W():typeof(__modImpl())local aa=a.cache.W if not aa then aa={c=__modImpl()}a.cache.W=aa end return aa.c end end do local function __modImpl()
+return aa end function a.V():typeof(__modImpl())local aa=a.cache.V if not aa then aa={c=__modImpl()}a.cache.V=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -33794,7 +33535,7 @@ local af=a.j()
 local ag=af.New
 local ai=af.Tween
 
-local ak=a.W()
+local ak=a.V()
 
 function aa.New(al,am,an,ao,ap)
 local aq={
@@ -34074,13 +33815,13 @@ end
 return aq
 end
 
-return aa end function a.X():typeof(__modImpl())local aa=a.cache.X if not aa then aa={c=__modImpl()}a.cache.X=aa end return aa.c end end do local function __modImpl()
+return aa end function a.W():typeof(__modImpl())local aa=a.cache.W if not aa then aa={c=__modImpl()}a.cache.W=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()local af=
 aa.New
 
 
-local ag=a.X()
+local ag=a.W()
 
 local ai={}
 
@@ -34177,7 +33918,7 @@ am.ElementFrame=ao.CodeFrame
 return am.__type,am
 end
 
-return ai end function a.Y():typeof(__modImpl())local aa=a.cache.Y if not aa then aa={c=__modImpl()}a.cache.Y=aa end return aa.c end end do local function __modImpl()
+return ai end function a.X():typeof(__modImpl())local aa=a.cache.X if not aa then aa={c=__modImpl()}a.cache.X=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local af=aa.New local ag=
@@ -35052,7 +34793,7 @@ end)
 return aw.__type,aw
 end
 
-return as end function a.Z():typeof(__modImpl())local aa=a.cache.Z if not aa then aa={c=__modImpl()}a.cache.Z=aa end return aa.c end end do local function __modImpl()
+return as end function a.Y():typeof(__modImpl())local aa=a.cache.Y if not aa then aa={c=__modImpl()}a.cache.Y=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local af=aa.New
@@ -35431,7 +35172,7 @@ end)
 return an.__type,an
 end
 
-return ak end function a._():typeof(__modImpl())local aa=a.cache._ if not aa then aa={c=__modImpl()}a.cache._=aa end return aa.c end end do local function __modImpl()
+return ak end function a.Z():typeof(__modImpl())local aa=a.cache.Z if not aa then aa={c=__modImpl()}a.cache.Z=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local af=aa.New
@@ -35448,7 +35189,7 @@ BackgroundTransparency=1,
 return"Space",{__type="Space",ElementFrame=am}
 end
 
-return ai end function a.aa():typeof(__modImpl())local aa=a.cache.aa if not aa then aa={c=__modImpl()}a.cache.aa=aa end return aa.c end end do local function __modImpl()
+return ai end function a._():typeof(__modImpl())local aa=a.cache._ if not aa then aa={c=__modImpl()}a.cache._=aa end return aa.c end end do local function __modImpl()
 local aa=a.j()
 local af=aa.New
 local ai=aa.Tween
@@ -35658,7 +35399,7 @@ end
 return an.__type,an
 end
 
-return ak end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end do local function __modImpl()
+return ak end function a.aa():typeof(__modImpl())local aa=a.cache.aa if not aa then aa={c=__modImpl()}a.cache.aa=aa end return aa.c end end do local function __modImpl()
 local aa=a.j()
 local af=aa.New
 
@@ -35743,7 +35484,7 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end do local function __modImpl()
+return ai end function a.ab():typeof(__modImpl())local aa=a.cache.ab if not aa then aa={c=__modImpl()}a.cache.ab=aa end return aa.c end end do local function __modImpl()
 local aa=a.j()
 local af=aa.New
 
@@ -35843,7 +35584,7 @@ end
 return am.__type,am
 end
 
-return ai end function a.ad():typeof(__modImpl())local aa=a.cache.ad if not aa then aa={c=__modImpl()}a.cache.ad=aa end return aa.c end end do local function __modImpl()
+return ai end function a.ac():typeof(__modImpl())local aa=a.cache.ac if not aa then aa={c=__modImpl()}a.cache.ac=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local af=aa.New
@@ -35930,7 +35671,7 @@ al.Tab
 return am.__type,am
 end
 
-return ai end function a.ae():typeof(__modImpl())local aa=a.cache.ae if not aa then aa={c=__modImpl()}a.cache.ae=aa end return aa.c end end do local function __modImpl()
+return ai end function a.ad():typeof(__modImpl())local aa=a.cache.ad if not aa then aa={c=__modImpl()}a.cache.ad=aa end return aa.c end end do local function __modImpl()
 local aa=(cloneref or clonereference or function(aa)
 return aa
 end)
@@ -36459,7 +36200,7 @@ aq.Main=d
 return aq.__type,aq
 end
 
-return an end function a.af():typeof(__modImpl())local aa=a.cache.af if not aa then aa={c=__modImpl()}a.cache.af=aa end return aa.c end end do local function __modImpl()
+return an end function a.ae():typeof(__modImpl())local aa=a.cache.ae if not aa then aa={c=__modImpl()}a.cache.ae=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -36782,7 +36523,7 @@ ap.Main=aw
 return ap.__type,ap
 end
 
-return am end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
+return am end function a.af():typeof(__modImpl())local aa=a.cache.af if not aa then aa={c=__modImpl()}a.cache.af=aa end return aa.c end end do local function __modImpl()
 
 local aa=a.j()
 local af=aa.New
@@ -37021,31 +36762,30 @@ am.ChartFrame.UIElements.Main.Size=UDim2.new(1,0,0,am.Height+20)
 return am.ChartFrame,am
 end
 
-return ai end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
+return ai end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
 
 return{
 Elements={
 Paragraph=a.J(),
-TelegramParagraph=a.K(),
-Button=a.L(),
-Toggle=a.O(),
-Slider=a.P(),
-ProgressBar=a.Q(),
-Keybind=a.R(),
-Input=a.S(),
-Dropdown=a.V(),
-Code=a.Y(),
-Colorpicker=a.Z(),
-Section=a._(),
-Divider=a.T(),
-Space=a.aa(),
-Image=a.ab(),
-Group=a.ac(),
-HStack=a.ad(),
-VStack=a.ae(),
-Viewport=a.af(),
-CharacterPreview=a.ag(),
-Chart=a.ah(),
+Button=a.K(),
+Toggle=a.N(),
+Slider=a.O(),
+ProgressBar=a.P(),
+Keybind=a.Q(),
+Input=a.R(),
+Dropdown=a.U(),
+Code=a.X(),
+Colorpicker=a.Y(),
+Section=a.Z(),
+Divider=a.S(),
+Space=a._(),
+Image=a.aa(),
+Group=a.ab(),
+HStack=a.ac(),
+VStack=a.ad(),
+Viewport=a.ae(),
+CharacterPreview=a.af(),
+Chart=a.ag(),
 
 },
 Load=function(aa,af,ai,ak,al,am,an,ao,ap)
@@ -37174,7 +36914,7 @@ end
 end
 end
 end,
-}end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
+}end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -37628,7 +37368,7 @@ end
 
 
 
-local aA=a.ai()
+local aA=a.ah()
 
 aA.Load(
 ar,
@@ -37822,7 +37562,7 @@ ao.OnChangeFunc(aq)
 end
 end
 
-return ao end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
+return ao end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -37831,7 +37571,7 @@ local af=a.j()
 local ai=af.New
 local ak=af.Tween
 
-local al=a.aj()
+local al=a.ai()
 
 function aa.New(am,an,ao,ap,aq)
 local ar={
@@ -38000,7 +37740,7 @@ return ar
 end
 
 
-return aa end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
+return aa end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
 return{
 Tab="table-of-contents",
 Paragraph="type",
@@ -38013,7 +37753,7 @@ Dropdown="chevrons-up-down",
 Code="terminal",
 Colorpicker="palette",
 ProgressBar="chart-bar",
-}end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end do local function __modImpl()
+}end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -38038,7 +37778,7 @@ Radius=22,
 Width=400,
 MaxHeight=380,
 
-Icons=a.al(),
+Icons=a.ak(),
 }
 
 local aq=ak("TextBox",{
@@ -38553,7 +38293,7 @@ end)
 return ap
 end
 
-return af end function a.am():typeof(__modImpl())local aa=a.cache.am if not aa then aa={c=__modImpl()}a.cache.am=aa end return aa.c end end do local function __modImpl()
+return af end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -40229,8 +39969,8 @@ if aw.OpenButton and typeof(aw.OpenButton)=="table"then
 aw:EditOpenButton(aw.OpenButton)
 end
 
-local C=a.aj()
-local F=a.ak()
+local C=a.ai()
+local F=a.aj()
 local G=C.Init(aw,av.WindUI,av.WindUI.TooltipGui)
 G:OnChange(function(H)
 aw.CurrentTab=H
@@ -40687,7 +40427,7 @@ end)
 
 
 if not aw.HideSearchBar then
-local Q=a.am()
+local Q=a.al()
 local R=false
 
 
@@ -40776,7 +40516,7 @@ end
 
 
 return aw
-end end function a.an():typeof(__modImpl())local aa=a.cache.an if not aa then aa={c=__modImpl()}a.cache.an=aa end return aa.c end end end
+end end function a.am():typeof(__modImpl())local aa=a.cache.am if not aa then aa={c=__modImpl()}a.cache.am=aa end return aa.c end end end
 
 local aa={
 Window=nil,
@@ -41083,7 +40823,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(as.Language)
 
 function aa.CreateWindow(az,aA)
-local aB=a.an()
+local aB=a.am()
 
 if not am:IsStudio()and writefile then
 if not isfolder"WindUI"then

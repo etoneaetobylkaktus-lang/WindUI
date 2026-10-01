@@ -143,19 +143,6 @@ Overview:Colorpicker({
 Overview:Divider()
 Overview:Space({ Columns = 1 })
 
--- Social channel details
-local Social = Window:Tab({ Title = "Social", Icon = "send" })
-Social:Paragraph({
-	Title = "Telegram Channel",
-	Desc = "Публичный канал. WindUI проверит страницу t.me и покажет название, подписчиков и аватар.",
-})
-local TelegramCard = Social:TelegramParagraph({
-	ChannelUser = "yasosalpeniskakloh",
-	Title = "Наш Telegram-канал",
-	ButtonTitle = "Скопировать ссылку и открыть",
-})
-Social:Button({ Title = "Обновить данные канала", Callback = function() TelegramCard:Refresh() end })
-
 -- Layout primitives
 local Layout = Window:Tab({ Title = "Layout", Icon = "layout-dashboard" })
 
@@ -324,4 +311,4 @@ Actions:Paragraph({
 	Desc = "The window also exposes Open, Close, Toggle, SetTitle, SetSize, SetUIScale, ToggleFullscreen, LockAll, UnlockAll, and tab selection methods.",
 })
 
-Window:SelectTab(2)
+Window:SelectTab(1)
