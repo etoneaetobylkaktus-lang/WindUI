@@ -4,7 +4,7 @@
 ]]
 
 local ok, WindUI = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/sker4ik/WindUI/main/dist/main.lua"))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/etoneaetobylkaktus-lang/WindUI/main/dist/main.lua"))()
 end)
 
 if not ok or not WindUI then
