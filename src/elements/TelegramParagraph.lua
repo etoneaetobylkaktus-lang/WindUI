@@ -36,6 +36,26 @@ local function FormatCount(text)
  return compact and compact:gsub("%s+", "") or nil
 end
 
+local function ReadCounter(html)
+ local value = html:match('class="counter_value"[^>]*>(.-)</span>')
+ local kind = html:match('class="counter_type"[^>]*>(.-)</span>')
+ if not value or not kind then return nil end
+ return DecodeEntities(value:gsub("<[^>]->", ""):gsub("%s+", ""))
+  .. " " .. DecodeEntities(kind:gsub("<[^>]->", ""):gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+local function ReadTagText(html, className)
+ local escaped = className:gsub("([^%w])", "%%%1")
+ local value = html:match('class="' .. escaped .. '"[^>]*>[%s\n]*(.-)[%s\n]*</[^>]+>')
+ return value and DecodeEntities(value:gsub("<[^>]->", "")) or nil
+end
+
+local function ReadImageSource(html)
+ local image = html:match('class="tgme_page_photo_image"[^>]*>[%s\n]*<img[^>]+src="(.-)"')
+  or html:match('class="tgme_page_photo_image"[^>]+src="(.-)"')
+ return image
+end
+
 function Element:New(Config)
 	Config.Hover = false
 	Config.TextOffset = 0
@@ -173,18 +193,24 @@ function Element:New(Config)
   SubscriberCount.Text = "@" .. username
 
   task.spawn(function()
-   local request = Creator.Request or request or http_request
-   if not request then
-    ChannelTitle.Text = "Telegram channel"
-    SubscriberCount.Text = "Metadata unavailable in this environment"
-    return
+   local requestFunction = Creator.Request or request or http_request
+   local success, response
+   if requestFunction then
+    success, response = pcall(function()
+     return requestFunction({ Url = "https://t.me/s/" .. username, Method = "GET" })
+    end)
+   elseif game.HttpGet then
+    success, response = pcall(function()
+     return game:HttpGet("https://t.me/s/" .. username)
+    end)
    end
 
-   local success, response = pcall(function()
-    return request({ Url = "https://t.me/s/" .. username, Method = "GET" })
-   end)
-
-   local html = success and type(response) == "table" and response.Body
+   local html
+   if success and type(response) == "string" then
+    html = response
+   elseif success and type(response) == "table" then
+    html = response.Body or response.body
+   end
    if type(html) ~= "string" or not html:find("telegram%.org") and not html:find("tgme_page") then
     ChannelTitle.Text = "Telegram channel not verified"
     SubscriberCount.Text = "Could not confirm a public channel at @" .. username
@@ -192,10 +218,13 @@ function Element:New(Config)
    end
 
    local title = ReadMeta(html, "og:title")
+    or ReadTagText(html, "tgme_channel_info_header_title")
     or html:match('class="tgme_page_title"[^>]*>[%s\n]*(.-)[%s\n]*</div>')
    local description = ReadMeta(html, "og:description") or ""
-   local avatarUrl = ReadMeta(html, "og:image")
+   local avatarUrl = ReadMeta(html, "og:image") or ReadImageSource(html)
    local count = FormatCount(description)
+    or ReadCounter(html)
+    or FormatCount(html:match('class="tgme_channel_info_counters"[^>]*>(.-)</div>'))
     or FormatCount(html:match('class="tgme_page_extra"[^>]*>(.-)</div>'))
 
    if title then

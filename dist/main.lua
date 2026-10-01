@@ -30685,6 +30685,26 @@ or af:match"([%d%.%,]+%s*[KkMm]?)%s+members?"
 return ag and ag:gsub("%s+","")or nil
 end
 
+local function ReadCounter(af)
+local ag=af:match'class="counter_value"[^>]*>(.-)</span>'
+local ah=af:match'class="counter_type"[^>]*>(.-)</span>'
+if not ag or not ah then return nil end
+return DecodeEntities(ag:gsub("<[^>]->",""):gsub("%s+",""))
+.." "..DecodeEntities(ah:gsub("<[^>]->",""):gsub("^%s+",""):gsub("%s+$",""))
+end
+
+local function ReadTagText(af,ag)
+local ah=ag:gsub("([^%w])","%%%1")
+local ai=af:match('class="'..ah..'"[^>]*>[%s\n]*(.-)[%s\n]*</[^>]+>')
+return ai and DecodeEntities(ai:gsub("<[^>]->",""))or nil
+end
+
+local function ReadImageSource(af)
+local ag=af:match'class="tgme_page_photo_image"[^>]*>[%s\n]*<img[^>]+src="(.-)"'
+or af:match'class="tgme_page_photo_image"[^>]+src="(.-)"'
+return ag
+end
+
 function ae.New(af,ag)
 ag.Hover=false
 ag.TextOffset=0
@@ -30823,17 +30843,23 @@ ap.Text="@"..ah
 
 task.spawn(function()
 local at=aa.Request or request or http_request
-if not at then
-ao.Text="Telegram channel"
-ap.Text="Metadata unavailable in this environment"
-return
-end
-
-local au,av=pcall(function()
+local au,av
+if at then
+au,av=pcall(function()
 return at{Url="https://t.me/s/"..ah,Method="GET"}
 end)
+elseif game.HttpGet then
+au,av=pcall(function()
+return game:HttpGet("https://t.me/s/"..ah)
+end)
+end
 
-local aw=au and type(av)=="table"and av.Body
+local aw
+if au and type(av)=="string"then
+aw=av
+elseif au and type(av)=="table"then
+aw=av.Body or av.body
+end
 if type(aw)~="string"or not aw:find"telegram%.org"and not aw:find"tgme_page"then
 ao.Text="Telegram channel not verified"
 ap.Text="Could not confirm a public channel at @"..ah
@@ -30841,10 +30867,13 @@ return
 end
 
 local ax=ReadMeta(aw,"og:title")
+or ReadTagText(aw,"tgme_channel_info_header_title")
 or aw:match'class="tgme_page_title"[^>]*>[%s\n]*(.-)[%s\n]*</div>'
 local ay=ReadMeta(aw,"og:description")or""
-local az=ReadMeta(aw,"og:image")
+local az=ReadMeta(aw,"og:image")or ReadImageSource(aw)
 local aA=FormatCount(ay)
+or ReadCounter(aw)
+or FormatCount(aw:match'class="tgme_channel_info_counters"[^>]*>(.-)</div>')
 or FormatCount(aw:match'class="tgme_page_extra"[^>]*>(.-)</div>')
 
 if ax then
