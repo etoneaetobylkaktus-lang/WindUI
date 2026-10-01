@@ -19,6 +19,7 @@ return {
 		HStack = require("./HStack"),
 		VStack = require("./VStack"),
 		Viewport = require("./Viewport"),
+		CharacterPreview = require("./CharacterPreview"),
 		Chart = require("./Chart"),
 		--Video       = require("./Video"),
 	},

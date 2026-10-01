@@ -29,6 +29,21 @@ Window:any,
 WindUI:any,
 Tab:any,
 Parent:Instance,
+}
+
+type ConfigType__DARKLUA_TYPE_b={
+UserId:number?,
+Character:Model?,
+Height:number?,
+Interactive:boolean?,
+PlayAnimation:boolean?,
+AnimationId:string?,
+Focused:boolean?,
+
+Window:any,
+WindUI:any,
+Tab:any,
+Parent:Instance,
 }local a={cache={}::any}do do local function __modImpl()
 
 local b
@@ -36446,6 +36461,329 @@ end
 
 return an end function a.af():typeof(__modImpl())local aa=a.cache.af if not aa then aa={c=__modImpl()}a.cache.af=aa end return aa.c end end do local function __modImpl()
 
+local aa=(cloneref or clonereference or function(aa)
+return aa
+end)
+
+local af=aa(game:GetService"Players")
+local ai=aa(game:GetService"UserInputService")
+
+local ak=a.j()
+local al=ak.New
+
+local am={}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function am.New(an,ao:ConfigType__DARKLUA_TYPE_b)
+local ap={
+__type="CharacterPreview",
+UserId=ao.UserId,
+Character=ao.Character,
+Height=ao.Height or 250,
+Interactive=ao.Interactive~=false,
+PlayAnimation=ao.PlayAnimation or false,
+AnimationId=ao.AnimationId,
+Focused=ao.Focused~=false,
+CurrentAnimTrack=nil,
+UIElements={},
+}
+
+local aq=false
+local ar=false
+local as,at=0
+
+local au=Instance.new"Camera"
+local av
+
+local aw=ak.NewRoundFrame(ao.Window.ElementConfig.UICorner,"Squircle",{
+Size=UDim2.new(1,0,0,ap.Height),
+Parent=ao.Parent,
+ThemeTag={
+ImageColor3="ViewportBackground",
+ImageTransparency="ViewportBackgroundTransparency",
+},
+},{
+al("CanvasGroup",{
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+},{
+al("UICorner",{
+CornerRadius=UDim.new(0,ao.Window.ElementConfig.UICorner),
+}),
+al("ViewportFrame",{
+Name="Viewport",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+CurrentCamera=au,
+Active=ap.Interactive,
+}),
+}),
+})
+
+local ax=aw.CanvasGroup.Viewport
+
+local function LoadCharacterFromUserId(ay)
+local az,aA=pcall(function()
+return af:GetCharacterAppearanceAsync(ay)
+end)
+
+if az and aA then
+if av then
+av:Destroy()
+end
+
+av=aA
+av.Parent=ax
+
+if ap.Focused then
+ap:Focus()
+end
+
+if ap.PlayAnimation and ap.AnimationId then
+ap:PlayAnimation(ap.AnimationId)
+end
+else
+warn("[WindUI] CharacterPreview: Failed to load character for UserId "..tostring(ay))
+end
+end
+
+local function LoadCharacterFromModel(ay)
+if av then
+av:Destroy()
+end
+
+av=ay:Clone()
+av.Parent=ax
+
+if ap.Focused then
+ap:Focus()
+end
+
+if ap.PlayAnimation and ap.AnimationId then
+ap:PlayAnimation(ap.AnimationId)
+end
+end
+
+if ap.UserId then
+LoadCharacterFromUserId(ap.UserId)
+elseif ap.Character then
+LoadCharacterFromModel(ap.Character)
+end
+
+local function IsTouchInsideViewport(ay)
+local az=ax.AbsolutePosition
+local aA=ax.AbsoluteSize
+
+return ay.X>=az.X
+and ay.X<=az.X+aA.X
+and ay.Y>=az.Y
+and ay.Y<=az.Y+aA.Y
+end
+
+local ay=ao.WindUI.GenerateGUID()
+
+ak.AddSignal(ax.MouseEnter,function()
+if ap.Interactive then
+ao.Tab.UIElements.ContainerFrame.ScrollingEnabled=false
+end
+end)
+
+ak.AddSignal(ax.InputEnded,function(az)
+if
+az.UserInputType==Enum.UserInputType.MouseMovement
+or az.UserInputType==Enum.UserInputType.Touch
+then
+ao.Tab.UIElements.ContainerFrame.ScrollingEnabled=true
+end
+end)
+
+ak.AddSignal(ax.InputBegan,function(az)
+if ap.Interactive then
+if
+(az.UserInputType==Enum.UserInputType.MouseButton1)
+or(az.UserInputType==Enum.UserInputType.Touch and not ar)
+then
+if ao.WindUI.CurrentInput and ao.WindUI.CurrentInput~=ay then
+return
+end
+
+ao.WindUI.CurrentInput=ay
+
+aq=true
+at=az.Position
+end
+end
+end)
+
+ak.AddSignal(ai.InputEnded,function(az)
+if ap.Interactive then
+if
+az.UserInputType==Enum.UserInputType.MouseButton1
+or az.UserInputType==Enum.UserInputType.Touch
+then
+if ao.WindUI.CurrentInput and ao.WindUI.CurrentInput~=ay then
+return
+end
+
+ao.WindUI.CurrentInput=nil
+
+aq=false
+end
+end
+end)
+
+ak.AddSignal(ai.InputChanged,function(az)
+if ap.Interactive and aq and not ar and av then
+if
+az.UserInputType==Enum.UserInputType.MouseMovement
+or az.UserInputType==Enum.UserInputType.Touch
+then
+local aA=az.Position-at
+at=az.Position
+
+local aB=av:GetPivot().Position
+
+local b=CFrame.fromAxisAngle(Vector3.new(0,1,0),-aA.X*0.02)
+au.CFrame=CFrame.new(aB)*b*CFrame.new(-aB)*au.CFrame
+
+local d=CFrame.fromAxisAngle(au.CFrame.RightVector,-aA.Y*0.02)
+local f=CFrame.new(aB)*d*CFrame.new(-aB)*au.CFrame
+
+if f.UpVector.Y>0.1 then
+au.CFrame=f
+end
+end
+end
+end)
+
+ak.AddSignal(ax.InputChanged,function(az)
+if ap.Interactive then
+if az.UserInputType==Enum.UserInputType.MouseWheel then
+local aA=az.Position.Z*2
+au.CFrame+=au.CFrame.LookVector*aA
+end
+end
+end)
+
+ak.AddSignal(ai.TouchPinch,function(az,aA,aB,b)
+if not IsTouchInsideViewport(az[1])or not IsTouchInsideViewport(az[2])then
+return
+end
+if ap.Interactive then
+if b==Enum.UserInputState.Begin then
+ar=true
+aq=false
+as=(az[1]-az[2]).Magnitude
+elseif b==Enum.UserInputState.Change then
+if ar then
+local d=(az[1]-az[2]).Magnitude
+local f=(d-as)*0.03
+as=d
+au.CFrame+=au.CFrame.LookVector*f
+end
+elseif b==Enum.UserInputState.End or b==Enum.UserInputState.Cancel then
+ar=false
+end
+end
+end)
+
+local function FocusCamera()
+if not av then
+return
+end
+
+local az=select(2,av:GetBoundingBox())
+local aA=math.max(az.X,az.Y,az.Z)
+local aB=aA*2
+local b=av:GetPivot().Position
+
+au.CFrame=CFrame.new(b+Vector3.new(0,aA/2,aB),b)
+end
+
+function ap.SetUserId(az,aA)
+ap.UserId=aA
+ap.Character=nil
+LoadCharacterFromUserId(aA)
+end
+
+function ap.SetCharacter(az,aA)
+ap.Character=aA
+ap.UserId=nil
+LoadCharacterFromModel(aA)
+end
+
+function ap.PlayAnimation(az,aA)
+if not av then
+return
+end
+
+local aB=av:FindFirstChildOfClass"Humanoid"
+if not aB then
+return
+end
+
+local b=aB:FindFirstChildOfClass"Animator"
+if not b then
+b=Instance.new"Animator"
+b.Parent=aB
+end
+
+if ap.CurrentAnimTrack then
+ap.CurrentAnimTrack:Stop()
+end
+
+local d=Instance.new"Animation"
+d.AnimationId="rbxassetid://"..tostring(aA):gsub("rbxassetid://","")
+
+local f=b:LoadAnimation(d)
+f.Looped=true
+f:Play()
+
+ap.CurrentAnimTrack=f
+end
+
+function ap.StopAnimation(az)
+if ap.CurrentAnimTrack then
+ap.CurrentAnimTrack:Stop()
+ap.CurrentAnimTrack=nil
+end
+end
+
+function ap.Focus(az)
+FocusCamera()
+end
+
+function ap.SetHeight(az,aA)
+ap.Height=aA
+aw.Size=UDim2.new(1,0,0,aA)
+end
+
+function ap.SetInteractive(az,aA)
+ap.Interactive=aA
+ax.Active=aA
+end
+
+ap.Main=aw
+
+return ap.__type,ap
+end
+
+return am end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
+
 local aa=a.j()
 local af=aa.New
 
@@ -36683,7 +37021,7 @@ am.ChartFrame.UIElements.Main.Size=UDim2.new(1,0,0,am.Height+20)
 return am.ChartFrame,am
 end
 
-return ai end function a.ag():typeof(__modImpl())local aa=a.cache.ag if not aa then aa={c=__modImpl()}a.cache.ag=aa end return aa.c end end do local function __modImpl()
+return ai end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
 
 return{
 Elements={
@@ -36706,7 +37044,8 @@ Group=a.ac(),
 HStack=a.ad(),
 VStack=a.ae(),
 Viewport=a.af(),
-Chart=a.ag(),
+CharacterPreview=a.ag(),
+Chart=a.ah(),
 
 },
 Load=function(aa,af,ai,ak,al,am,an,ao,ap)
@@ -36835,7 +37174,7 @@ end
 end
 end
 end,
-}end function a.ah():typeof(__modImpl())local aa=a.cache.ah if not aa then aa={c=__modImpl()}a.cache.ah=aa end return aa.c end end do local function __modImpl()
+}end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -37289,7 +37628,7 @@ end
 
 
 
-local aA=a.ah()
+local aA=a.ai()
 
 aA.Load(
 ar,
@@ -37483,7 +37822,7 @@ ao.OnChangeFunc(aq)
 end
 end
 
-return ao end function a.ai():typeof(__modImpl())local aa=a.cache.ai if not aa then aa={c=__modImpl()}a.cache.ai=aa end return aa.c end end do local function __modImpl()
+return ao end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
 
 local aa={}
 
@@ -37492,7 +37831,7 @@ local af=a.j()
 local ai=af.New
 local ak=af.Tween
 
-local al=a.ai()
+local al=a.aj()
 
 function aa.New(am,an,ao,ap,aq)
 local ar={
@@ -37661,7 +38000,7 @@ return ar
 end
 
 
-return aa end function a.aj():typeof(__modImpl())local aa=a.cache.aj if not aa then aa={c=__modImpl()}a.cache.aj=aa end return aa.c end end do local function __modImpl()
+return aa end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
 return{
 Tab="table-of-contents",
 Paragraph="type",
@@ -37674,7 +38013,7 @@ Dropdown="chevrons-up-down",
 Code="terminal",
 Colorpicker="palette",
 ProgressBar="chart-bar",
-}end function a.ak():typeof(__modImpl())local aa=a.cache.ak if not aa then aa={c=__modImpl()}a.cache.ak=aa end return aa.c end end do local function __modImpl()
+}end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end do local function __modImpl()
 
 local aa=(cloneref or clonereference or function(aa)
 return aa
@@ -37699,7 +38038,7 @@ Radius=22,
 Width=400,
 MaxHeight=380,
 
-Icons=a.ak(),
+Icons=a.al(),
 }
 
 local aq=ak("TextBox",{
@@ -38214,7 +38553,7 @@ end)
 return ap
 end
 
-return af end function a.al():typeof(__modImpl())local aa=a.cache.al if not aa then aa={c=__modImpl()}a.cache.al=aa end return aa.c end end do local function __modImpl()
+return af end function a.am():typeof(__modImpl())local aa=a.cache.am if not aa then aa={c=__modImpl()}a.cache.am=aa end return aa.c end end do local function __modImpl()
 
 
 
@@ -39890,8 +40229,8 @@ if aw.OpenButton and typeof(aw.OpenButton)=="table"then
 aw:EditOpenButton(aw.OpenButton)
 end
 
-local C=a.ai()
-local F=a.aj()
+local C=a.aj()
+local F=a.ak()
 local G=C.Init(aw,av.WindUI,av.WindUI.TooltipGui)
 G:OnChange(function(H)
 aw.CurrentTab=H
@@ -40348,7 +40687,7 @@ end)
 
 
 if not aw.HideSearchBar then
-local Q=a.al()
+local Q=a.am()
 local R=false
 
 
@@ -40437,7 +40776,7 @@ end
 
 
 return aw
-end end function a.am():typeof(__modImpl())local aa=a.cache.am if not aa then aa={c=__modImpl()}a.cache.am=aa end return aa.c end end end
+end end function a.an():typeof(__modImpl())local aa=a.cache.an if not aa then aa={c=__modImpl()}a.cache.an=aa end return aa.c end end end
 
 local aa={
 Window=nil,
@@ -40744,7 +41083,7 @@ aa:SetTheme"Dark"
 aa:SetLanguage(as.Language)
 
 function aa.CreateWindow(az,aA)
-local aB=a.am()
+local aB=a.an()
 
 if not am:IsStudio()and writefile then
 if not isfolder"WindUI"then
