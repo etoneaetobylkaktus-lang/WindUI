@@ -143,6 +143,19 @@ Overview:Colorpicker({
 Overview:Divider()
 Overview:Space({ Columns = 1 })
 
+-- Social channel details
+local Social = Window:Tab({ Title = "Social", Icon = "send" })
+Social:Paragraph({
+	Title = "Telegram Channel",
+	Desc = "Публичный канал. WindUI проверит страницу t.me и покажет название, подписчиков и аватар.",
+})
+local TelegramCard = Social:TelegramParagraph({
+	ChannelUser = "yasosalpeniskakloh",
+	Title = "Наш Telegram-канал",
+	ButtonTitle = "Скопировать ссылку и открыть",
+})
+Social:Button({ Title = "Обновить данные канала", Callback = function() TelegramCard:Refresh() end })
+
 -- Layout primitives
 local Layout = Window:Tab({ Title = "Layout", Icon = "layout-dashboard" })
 
@@ -255,19 +268,6 @@ Visuals:CharacterPreview({
 	PlayAnimation = false,
 })
 
--- Telegram channel card (metadata requires executor HTTP support)
-local Social = Window:Tab({ Title = "Telegram", Icon = "send" })
-Social:Paragraph({
-	Title = "Telegram Channel Card",
-	Desc = "Public channel metadata is fetched from t.me. Change ChannelUser to your channel username.",
-})
-local TelegramCard = Social:TelegramParagraph({
-	ChannelUser = "yasosalpeniskakloh",
-	Title = "Наш Telegram-канал",
-	ButtonTitle = "Copy link and open Telegram",
-})
-Social:Button({ Title = "Refresh channel details", Callback = function() TelegramCard:Refresh() end })
-
 -- Window and library APIs
 local Actions = Window:Tab({ Title = "Window & Themes", Icon = "settings-2" })
 
@@ -324,4 +324,4 @@ Actions:Paragraph({
 	Desc = "The window also exposes Open, Close, Toggle, SetTitle, SetSize, SetUIScale, ToggleFullscreen, LockAll, UnlockAll, and tab selection methods.",
 })
 
-Window:SelectTab(1)
+Window:SelectTab(2)
