@@ -30052,7 +30052,7 @@ ao,
 ab("Frame",{
 Size=UDim2.new(
 ah.Justify=="Between"and 1 or 0,
-ah.Justify=="Between"and-ag.TextOffset or 0,
+ah.Justify=="Between"and-(ag.TextOffset or 0)or 0,
 0,
 0
 ),

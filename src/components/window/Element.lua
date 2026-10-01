@@ -178,7 +178,7 @@ return function(Config)
 		New("Frame", {
 			Size = UDim2.new(
 				Element.Justify == "Between" and 1 or 0,
-				Element.Justify == "Between" and -Config.TextOffset or 0,
+				Element.Justify == "Between" and -(Config.TextOffset or 0) or 0,
 				0,
 				0
 			),
