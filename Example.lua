@@ -1,6 +1,8 @@
 --[[
-    WindUI Example
-    Loads the library from the GitHub repository
+    WindUI Viewport Demo
+    Showcases all Viewport features:
+    auto-rotate, interactive orbit/zoom/pan, grid floor,
+    dynamic lighting, camera presets, FOV control
 ]]
 
 local ok, WindUI = pcall(function()
@@ -8,72 +10,59 @@ local ok, WindUI = pcall(function()
 end)
 
 if not ok or not WindUI then
-    return warn("[ Example ] Failed to load WindUI: " .. tostring(WindUI))
+    return warn("[ Viewport Demo ] Failed to load WindUI: " .. tostring(WindUI))
 end
 
 local Window = WindUI:CreateWindow({
-    Title = "WindUI Local Example",
-    Author = "local build",
-    Folder = "WindUIExample",
+    Title = "WindUI Viewport Demo",
+    Author = "viewport showcase",
+    Folder = "WindUIViewportDemo",
+    ToggleKey = Enum.KeyCode.RightShift,
 })
 
-Window:Tag({
-    Title = "local",
-    Icon = "package",
-})
+-- */  Demo Object  /* --
+local function MakeDemoModel()
+    local Model = Instance.new("Model")
 
--- */  Main Tab  /* --
-local MainTab = Window:Tab({
-    Title = "Main",
-    Icon = "house",
-})
+    local Core = Instance.new("Part")
+    Core.Size = Vector3.new(3, 3, 3)
+    Core.Color = Color3.fromHex("#7775F2")
+    Core.Material = Enum.Material.Neon
+    Core.Anchored = true
+    Core.Parent = Model
 
-MainTab:Paragraph({
-    Title = "Local Build",
-    Desc = "This window was loaded from the GitHub repository (dist/main.lua)",
-    Icon = "package",
-})
+    local Ring = Instance.new("Part")
+    Ring.Size = Vector3.new(5, 0.5, 5)
+    Ring.Color = Color3.fromHex("#30FF6A")
+    Ring.Material = Enum.Material.Metal
+    Ring.Transparency = 0.3
+    Ring.Anchored = true
+    Ring.CFrame = CFrame.new(0, 2.5, 0) * CFrame.Angles(math.rad(45), 0, math.rad(45))
+    Ring.Parent = Model
 
-MainTab:Toggle({
-    Title = "Example Toggle",
-    Value = false,
-    Callback = function(v)
-        print("[ Example ] Toggle:", v)
-    end,
-})
+    local Base = Instance.new("Part")
+    Base.Size = Vector3.new(6, 0.3, 6)
+    Base.Color = Color3.fromHex("#1c1c1c")
+    Base.Material = Enum.Material.SmoothPlastic
+    Base.Anchored = true
+    Base.CFrame = CFrame.new(0, -2.5, 0)
+    Base.Parent = Model
 
-MainTab:Slider({
-    Title = "Example Slider",
-    Min = 0,
-    Max = 100,
-    Value = 50,
-    Callback = function(v)
-        print("[ Example ] Slider:", v)
-    end,
-})
+    Model.PrimaryPart = Core
+    return Model
+end
 
-MainTab:Input({
-    Title = "Example Input",
-    Placeholder = "type something...",
-    Callback = function(text)
-        print("[ Example ] Input:", text)
-    end,
-})
+local DemoModel = MakeDemoModel()
 
 -- */  Viewport Tab  /* --
 local ViewportTab = Window:Tab({
     Title = "Viewport",
     Icon = "box",
+    Desc = "3D object inside a UI tab — drag to rotate, scroll to zoom",
 })
 
-local Part = Instance.new("Part")
-Part.Size = Vector3.new(4, 4, 4)
-Part.Color = Color3.fromHex("#7775F2")
-Part.Material = Enum.Material.Neon
-Part.Anchored = true
-
 local Viewport = ViewportTab:Viewport({
-    Object = Part,
+    Object = DemoModel,
     Interactive = true,
     AutoRotate = true,
     ShowGrid = true,
@@ -82,85 +71,114 @@ local Viewport = ViewportTab:Viewport({
         Color = Color3.fromRGB(255, 255, 255),
         Range = 30,
     },
-    Height = 250,
+    Height = 280,
 })
 
-ViewportTab:Button({
-    Title = "Camera: Isometric",
+-- */  Camera Controls  /* --
+local CameraSection = ViewportTab:Section({
+    Title = "Camera Presets",
     Icon = "camera",
-    Callback = function()
-        Viewport:SetCameraPreset("Isometric")
-    end,
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
 })
 
-ViewportTab:Button({
-    Title = "Camera: Top",
-    Icon = "camera",
-    Callback = function()
-        Viewport:SetCameraPreset("Top")
-    end,
-})
+local HStack = CameraSection:HStack()
+local VStackLeft = HStack:VStack()
+local VStackRight = HStack:VStack()
+
+local function PresetButton(parent, title, preset)
+    parent:Button({
+        Title = title,
+        Justify = "Center",
+        Callback = function()
+            Viewport:SetCameraPreset(preset)
+        end,
+    })
+end
+
+PresetButton(VStackLeft, "Front", "Front")
+PresetButton(VStackLeft, "Left", "Left")
+PresetButton(VStackLeft, "Top", "Top")
+PresetButton(VStackRight, "Back", "Back")
+PresetButton(VStackRight, "Right", "Right")
+PresetButton(VStackRight, "Isometric", "Isometric")
 
 ViewportTab:Button({
     Title = "Reset Camera",
     Icon = "rotate-ccw",
+    Justify = "Center",
     Callback = function()
         Viewport:ResetCamera()
     end,
 })
 
--- */  Chart Tab  /* --
-local ChartTab = Window:Tab({
-    Title = "Chart",
-    Icon = "line-chart",
+-- */  Behaviour Controls  /* --
+local SettingsSection = ViewportTab:Section({
+    Title = "Settings",
+    Icon = "settings",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
 })
 
-local Chart = ChartTab:Chart({
-    Title = "Example Chart",
-    Type = "Line",
-    Data = { 5, 12, 8, 20, 15, 30, 25 },
-    Height = 180,
-    Colors = { Color3.fromHex("#30FF6A") },
-})
-
-ChartTab:Button({
-    Title = "Switch to Bar",
-    Icon = "bar-chart-3",
-    Callback = function()
-        Chart:SetType("Bar")
+SettingsSection:Toggle({
+    Title = "Auto Rotate",
+    Desc = "Object spins on its own, pauses while you interact",
+    Value = true,
+    Callback = function(v)
+        Viewport:SetAutoRotate(v)
     end,
 })
 
-ChartTab:Button({
-    Title = "Randomize Data",
-    Icon = "dices",
-    Callback = function()
-        local data = {}
-        for _ = 1, 7 do
-            table.insert(data, math.random(1, 40))
-        end
-        Chart:SetData(data)
+SettingsSection:Toggle({
+    Title = "Grid Floor",
+    Desc = "Reference grid under the object",
+    Value = true,
+    Callback = function(v)
+        Viewport:SetGrid(v)
     end,
 })
 
--- */  Info Tab  /* --
-local InfoTab = Window:Tab({
-    Title = "Info",
-    Icon = "badge-info",
+SettingsSection:Slider({
+    Title = "Field of View",
+    Min = 30,
+    Max = 110,
+    Value = 70,
+    Callback = function(v)
+        Viewport:SetFOV(v)
+    end,
 })
 
-InfoTab:Paragraph({
-    Title = "WindUI",
-    Desc = "Version: " .. WindUI.Version,
-    Buttons = {
-        {
-            Title = "GitHub",
-            Icon = "github",
-            Callback = function()
-                print("[ Example ] GitHub")
-            end,
-        },
-    },
+SettingsSection:Slider({
+    Title = "Light Brightness",
+    Min = 0,
+    Max = 5,
+    Value = 2,
+    Callback = function(v)
+        Viewport:SetLighting({ Brightness = v })
+    end,
+})
+
+SettingsSection:Colorpicker({
+    Title = "Light Color",
+    Default = Color3.fromRGB(255, 255, 255),
+    Callback = function(color)
+        Viewport:SetLighting({ Color = color })
+    end,
+})
+
+SettingsSection:Button({
+    Title = "Replace Object",
+    Icon = "refresh-ccw",
+    Callback = function()
+        Viewport:SetObject(MakeDemoModel())
+    end,
+})
+
+ViewportTab:Paragraph({
+    Title = "Controls",
+    Desc = "Drag — orbit  |  Scroll / Pinch — zoom  |  Shift+Drag / Right Click — pan  |  Two-finger drag (mobile) — pan",
 })
 
 Window:SelectTab(1)
