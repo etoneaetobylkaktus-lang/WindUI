@@ -1,237 +1,483 @@
 --[[
-    WindUI Viewport Container Test
-    Tests Viewport inside: Section, Group, and plain Tab
-    One tab per container
+    WindUI Visuals Demo — CS2 style ESP preview
+    2D ESP box rendered over a live Viewport with full color customization
 ]]
+
+local RunService = game:GetService("RunService")
 
 local ok, WindUI = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/etoneaetobylkaktus-lang/WindUI/main/dist/main.lua"))()
 end)
 
 if not ok or not WindUI then
-    return warn("[ Viewport Test ] Failed to load WindUI: " .. tostring(WindUI))
+    return warn("[ Visuals ] Failed to load WindUI: " .. tostring(WindUI))
 end
 
 local Window = WindUI:CreateWindow({
-    Title = "WindUI Viewport Containers",
-    Author = "section / group / tab",
-    Folder = "WindUIViewportContainers",
+    Title = "WindUI Visuals — CS2 Style",
+    Author = "esp preview",
+    Folder = "WindUIVisuals",
     ToggleKey = Enum.KeyCode.RightShift,
 })
 
--- */  Demo Models  /* --
-local function MakeCube(color, size)
-    local Part = Instance.new("Part")
-    Part.Size = Vector3.new(size or 3, size or 3, size or 3)
-    Part.Color = color or Color3.fromHex("#7775F2")
-    Part.Material = Enum.Material.Neon
-    Part.Anchored = true
-    return Part
-end
+-- */  Target — your own character  /* --
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
-local function MakeSphere(color)
-    local Part = Instance.new("Part")
-    Part.Shape = Enum.PartType.Ball
-    Part.Size = Vector3.new(4, 4, 4)
-    Part.Color = color or Color3.fromHex("#30FF6A")
-    Part.Material = Enum.Material.Neon
-    Part.Anchored = true
-    return Part
-end
-
-local function MakeStack()
-    local Model = Instance.new("Model")
-    local colors = { "#ECA201", "#257AF7", "#EF4F1D" }
-    for i, hex in ipairs(colors) do
-        local Part = Instance.new("Part")
-        Part.Size = Vector3.new(3 - i * 0.5, 1, 3 - i * 0.5)
-        Part.Color = Color3.fromHex(hex)
-        Part.Material = Enum.Material.SmoothPlastic
-        Part.Anchored = true
-        Part.CFrame = CFrame.new(0, -1.5 + i, 0)
-        Part.Parent = Model
+local function CloneCharacter()
+    local char = LocalPlayer.Character
+    if not char or not char.Parent then
+        char = LocalPlayer.CharacterAppearanceLoaded:Wait()
     end
-    return Model
+
+    local Clone = Instance.new("Model")
+    Clone.Name = LocalPlayer.Name
+
+    for _, obj in ipairs(char:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            local copy = obj:Clone()
+            copy.Anchored = true
+            copy.CanCollide = false
+            copy.Parent = Clone
+        end
+    end
+
+    -- fallback if nothing cloned (rare)
+    if not Clone:FindFirstChildOfClass("BasePart") then
+        local P = Instance.new("Part")
+        P.Size = Vector3.new(2, 5, 1)
+        P.Anchored = true
+        P.Color = Color3.fromHex("#7775F2")
+        P.Parent = Clone
+    end
+
+    return Clone
 end
 
--- */  Tab 1: Viewport inside Section  /* --
-local SectionTab = Window:Tab({
-    Title = "In Section",
-    Icon = "square-stack",
-    Desc = "Viewport nested inside a Section box",
+-- */  Visuals Tab  /* --
+local VisualsTab = Window:Tab({
+    Title = "Visuals",
+    Icon = "eye",
+    Desc = "CS2 style ESP — live preview over viewport",
 })
 
-local Section = SectionTab:Section({
-    Title = "Section Container",
-    Icon = "box",
+local PreviewSection = VisualsTab:Section({
+    Title = "Preview",
+    Icon = "monitor",
     Box = true,
     BoxBorder = true,
     Opened = true,
 })
 
-local SectionViewport = Section:Viewport({
-    Object = MakeCube(Color3.fromHex("#7775F2")),
+local Viewport = PreviewSection:Viewport({
+    Object = CloneCharacter(),
     Interactive = true,
     AutoRotate = true,
-    Height = 200,
+    Lighting = {
+        Brightness = 1.5,
+        Color = Color3.fromRGB(255, 255, 255),
+        Range = 40,
+    },
+    Height = 300,
 })
 
-Section:Toggle({
-    Title = "Auto Rotate",
+-- */  ESP Overlay (2D, drawn over the viewport)  /* --
+local New = WindUI.Creator.New
+
+local Canvas = Viewport.Main:FindFirstChild("CanvasGroup", true)
+local ViewportFrame = Canvas and Canvas:FindFirstChildOfClass("ViewportFrame")
+
+local Overlay = New("Frame", {
+    Name = "ESPOverlay",
+    Size = UDim2.new(1, 0, 1, 0),
+    BackgroundTransparency = 1,
+    ZIndex = 50,
+    ClipsDescendants = true,
+    Parent = Canvas,
+})
+
+local Settings = {
+    Enabled = true,
+    Style = "Corners", -- Corners | Full
+    BoxColor = Color3.fromHex("#EF4444"),
+    FillColor = Color3.fromHex("#EF4444"),
+    SnapColor = Color3.fromHex("#FFFFFF"),
+    Thickness = 2,
+    HealthBar = true,
+    Name = true,
+    Distance = true,
+    Fill = false,
+    Snapline = false,
+}
+
+-- full box (one frame + stroke)
+local FullBox = New("Frame", {
+    BackgroundTransparency = 1,
+    ZIndex = 51,
+    Visible = false,
+    Parent = Overlay,
+}, {
+    New("UIStroke", { Thickness = 2, ApplyStrokeMode = Enum.ApplyStrokeMode.Border }),
+})
+
+-- corner box: 8 segments (4 corners x 2 axes), each with black backing
+local Segments = {}
+local CornerNames = { "TL_H", "TL_V", "TR_H", "TR_V", "BL_H", "BL_V", "BR_H", "BR_V" }
+local Anchors = {
+    TL_H = Vector2.new(0, 0), TL_V = Vector2.new(0, 0),
+    TR_H = Vector2.new(1, 0), TR_V = Vector2.new(1, 0),
+    BL_H = Vector2.new(0, 1), BL_V = Vector2.new(0, 1),
+    BR_H = Vector2.new(1, 1), BR_V = Vector2.new(1, 1),
+}
+
+for _, name in ipairs(CornerNames) do
+    Segments[name] = {
+        Back = New("Frame", {
+            BackgroundColor3 = Color3.new(0, 0, 0),
+            BackgroundTransparency = 0.3,
+            BorderSizePixel = 0,
+            ZIndex = 51,
+            AnchorPoint = Anchors[name],
+            Visible = false,
+            Parent = Overlay,
+        }),
+        Front = New("Frame", {
+            BorderSizePixel = 0,
+            ZIndex = 52,
+            AnchorPoint = Anchors[name],
+            Visible = false,
+            Parent = Overlay,
+        }),
+    }
+end
+
+local Fill = New("Frame", {
+    BorderSizePixel = 0,
+    ZIndex = 50,
+    BackgroundTransparency = 0.65,
+    Visible = false,
+    Parent = Overlay,
+})
+
+local HealthBack = New("Frame", {
+    BackgroundColor3 = Color3.new(0, 0, 0),
+    BackgroundTransparency = 0.3,
+    BorderSizePixel = 0,
+    ZIndex = 51,
+    AnchorPoint = Vector2.new(1, 0),
+    Visible = false,
+    Parent = Overlay,
+}, {
+    New("UICorner", { CornerRadius = UDim.new(0, 2) }),
+})
+
+local HealthFill = New("Frame", {
+    BorderSizePixel = 0,
+    ZIndex = 52,
+    AnchorPoint = Vector2.new(0, 1),
+    Position = UDim2.new(0, 0, 1, 0),
+    Visible = false,
+    Parent = HealthBack,
+}, {
+    New("UICorner", { CornerRadius = UDim.new(0, 2) }),
+})
+
+local NameLabel = New("TextLabel", {
+    BackgroundTransparency = 1,
+    Font = Enum.Font.GothamBold,
+    TextSize = 12,
+    TextColor3 = Color3.new(1, 1, 1),
+    TextStrokeTransparency = 0.4,
+    Text = LocalPlayer.Name,
+    ZIndex = 52,
+    AnchorPoint = Vector2.new(0.5, 1),
+    Visible = false,
+    Parent = Overlay,
+})
+
+local DistLabel = New("TextLabel", {
+    BackgroundTransparency = 1,
+    Font = Enum.Font.GothamMedium,
+    TextSize = 11,
+    TextColor3 = Color3.fromRGB(200, 200, 200),
+    TextStrokeTransparency = 0.4,
+    ZIndex = 52,
+    AnchorPoint = Vector2.new(0.5, 0),
+    Visible = false,
+    Parent = Overlay,
+})
+
+local Snapline = New("Frame", {
+    BackgroundColor3 = Color3.new(1, 1, 1),
+    BorderSizePixel = 0,
+    ZIndex = 50,
+    AnchorPoint = Vector2.new(0, 0.5),
+    Size = UDim2.new(0, 0, 0, 1),
+    Visible = false,
+    Parent = Overlay,
+})
+
+-- */  Projection + Draw  /* --
+local Corners = {}
+
+local function UpdateCorners()
+    local bboxCF, bboxSize = Viewport.Object:GetBoundingBox()
+    table.clear(Corners)
+    for i = 0, 7 do
+        local off = Vector3.new(
+            (i % 2 == 0) and -0.5 or 0.5,
+            (math.floor(i / 2) % 2 == 0) and -0.5 or 0.5,
+            (math.floor(i / 4) % 2 == 0) and -0.5 or 0.5
+        )
+        Corners[i + 1] = (bboxCF * CFrame.new(off * bboxSize)).Position
+    end
+end
+
+UpdateCorners()
+
+local function SetAll(visible)
+    FullBox.Visible = visible and Settings.Style == "Full"
+    local cornerVis = visible and Settings.Style == "Corners"
+    for _, seg in pairs(Segments) do
+        seg.Back.Visible = cornerVis
+        seg.Front.Visible = cornerVis
+    end
+    Fill.Visible = visible and Settings.Fill
+    HealthBack.Visible = visible and Settings.HealthBar
+    HealthFill.Visible = HealthBack.Visible
+    NameLabel.Visible = visible and Settings.Name
+    DistLabel.Visible = visible and Settings.Distance
+    Snapline.Visible = visible and Settings.Snapline
+end
+
+local Clock = 0
+
+local Conn = RunService.RenderStepped:Connect(function(dt)
+    Clock += dt
+
+    if not ViewportFrame or not ViewportFrame.Parent then
+        Conn:Disconnect()
+        return
+    end
+
+    if not Settings.Enabled then
+        SetAll(false)
+        return
+    end
+
+    local Size = ViewportFrame.AbsoluteSize
+    if Size.X < 10 or Size.Y < 10 then
+        SetAll(false)
+        return
+    end
+
+    local CamCF = Viewport.Camera.CFrame
+    local Scale = (Size.Y / 2) / math.tan(math.rad(Viewport.Camera.FieldOfView / 2))
+
+    local minX, minY = math.huge, math.huge
+    local maxX, maxY = -math.huge, -math.huge
+
+    for _, worldPos in ipairs(Corners) do
+        local rel = CamCF:PointToObjectSpace(worldPos)
+        if rel.Z >= -0.05 then
+            SetAll(false)
+            return
+        end
+        local px = (rel.X / -rel.Z) * Scale
+        local py = (rel.Y / -rel.Z) * Scale
+        local sx = Size.X / 2 + px
+        local sy = Size.Y / 2 - py
+        minX = math.min(minX, sx)
+        minY = math.min(minY, sy)
+        maxX = math.max(maxX, sx)
+        maxY = math.max(maxY, sy)
+    end
+
+    local x, y = minX, minY
+    local x2, y2 = maxX, maxY
+    local w, h = x2 - x, y2 - y
+    local t = Settings.Thickness
+
+    SetAll(true)
+
+    -- full box
+    FullBox.Position = UDim2.fromOffset(x, y)
+    FullBox.Size = UDim2.fromOffset(w, h)
+    FullBox.UIStroke.Color = Settings.BoxColor
+    FullBox.UIStroke.Thickness = t
+
+    -- corner segments
+    local lenH = math.clamp(w * 0.25, 8, 34)
+    local lenV = math.clamp(h * 0.25, 8, 34)
+
+    local function Seg(name, px, py, isH)
+        local seg = Segments[name]
+        local len = isH and lenH or lenV
+        local thick = isH and t or t
+        seg.Back.Position = UDim2.fromOffset(px, py)
+        seg.Back.Size = isH and UDim2.fromOffset(len + 2, t + 2) or UDim2.fromOffset(t + 2, len + 2)
+        seg.Front.Position = UDim2.fromOffset(px, py)
+        seg.Front.Size = isH and UDim2.fromOffset(len, t) or UDim2.fromOffset(t, len)
+        seg.Front.BackgroundColor3 = Settings.BoxColor
+    end
+
+    Seg("TL_H", x, y, true)      Seg("TL_V", x, y, false)
+    Seg("TR_H", x2, y, true)     Seg("TR_V", x2, y, false)
+    Seg("BL_H", x, y2, true)     Seg("BL_V", x, y2, false)
+    Seg("BR_H", x2, y2, true)    Seg("BR_V", x2, y2, false)
+
+    -- fill
+    Fill.Position = UDim2.fromOffset(x, y)
+    Fill.Size = UDim2.fromOffset(w, h)
+    Fill.BackgroundColor3 = Settings.FillColor
+
+    -- health bar (pulsing to show gradient)
+    local pct = 0.5 + 0.5 * math.sin(Clock * 1.4)
+    HealthBack.Position = UDim2.fromOffset(x - 7, y)
+    HealthBack.Size = UDim2.fromOffset(4, h)
+    HealthFill.Size = UDim2.new(1, 0, pct, 0)
+    HealthFill.BackgroundColor3 = Color3.fromRGB(255, math.floor(255 * pct), 0)
+
+    -- name / distance
+    NameLabel.Position = UDim2.fromOffset((x + x2) / 2, y - 4)
+    DistLabel.Position = UDim2.fromOffset((x + x2) / 2, y2 + 4)
+
+    local camDist = (CamCF.Position - Viewport.Object:GetPivot().Position).Magnitude
+    DistLabel.Text = string.format("%dm", math.floor(camDist / 3))
+
+    -- snapline: screen bottom center -> box bottom center
+    local dx = (x + x2) / 2 - Size.X / 2
+    local dy = y2 - Size.Y
+    local len = math.sqrt(dx * dx + dy * dy)
+    Snapline.Position = UDim2.fromOffset(Size.X / 2, Size.Y)
+    Snapline.Size = UDim2.fromOffset(len, 1)
+    Snapline.Rotation = math.deg(math.atan2(dy, dx))
+    Snapline.BackgroundColor3 = Settings.SnapColor
+end)
+
+-- */  ESP Settings  /* --
+local BoxSection = VisualsTab:Section({
+    Title = "Box ESP",
+    Icon = "square-dashed",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+BoxSection:Toggle({
+    Title = "Enabled",
+    Desc = "Master toggle for the preview ESP",
     Value = true,
     Callback = function(v)
-        SectionViewport:SetAutoRotate(v)
+        Settings.Enabled = v
     end,
 })
 
--- viewport BELOW the section, still in same tab (section closed state test)
-local ClosedSection = SectionTab:Section({
-    Title = "Collapsed Section",
-    Icon = "package",
-    Box = true,
-    Opened = false,
-})
-
-local CollapsedViewport = ClosedSection:Viewport({
-    Object = MakeSphere(Color3.fromHex("#ECA201")),
-    Interactive = true,
-    Height = 200,
-})
-
--- */  Tab 2: Viewport inside Group  /* --
-local GroupTab = Window:Tab({
-    Title = "In Group",
-    Icon = "layers",
-    Desc = "Two viewports side by side in an HStack group",
-})
-
-GroupTab:Paragraph({
-    Title = "Group Test",
-    Desc = "Viewports inside HStack > VStack groups",
-})
-
-local HStack = GroupTab:HStack()
-local VStackLeft = HStack:VStack()
-local VStackRight = HStack:VStack()
-
-local GroupViewportLeft = VStackLeft:Viewport({
-    Object = MakeCube(Color3.fromHex("#257AF7"), 2.5),
-    Interactive = true,
-    AutoRotate = true,
-    Height = 160,
-})
-
-local GroupViewportRight = VStackRight:Viewport({
-    Object = MakeSphere(Color3.fromHex("#30FF6A")),
-    Interactive = true,
-    Height = 160,
-})
-
-VStackLeft:Button({
-    Title = "Spin Left",
-    Justify = "Center",
-    Callback = function()
-        GroupViewportLeft:SetAutoRotate(not GroupViewportLeft.AutoRotate)
+BoxSection:Dropdown({
+    Title = "Box Style",
+    Options = { "Corners", "Full" },
+    Default = "Corners",
+    Callback = function(option)
+        Settings.Style = option
     end,
 })
 
-VStackRight:Button({
-    Title = "Spin Right",
-    Justify = "Center",
-    Callback = function()
-        GroupViewportRight:SetAutoRotate(not GroupViewportRight.AutoRotate)
-    end,
-})
-
--- viewport in a plain (borderless) group, full width
-local PlainGroup = GroupTab:Group()
-
-local GroupViewportWide = PlainGroup:Viewport({
-    Object = MakeStack(),
-    Interactive = true,
-    ShowGrid = true,
-    Height = 180,
-})
-
-PlainGroup:Button({
-    Title = "Swap Wide Object",
-    Icon = "refresh-ccw",
-    Justify = "Center",
-    Callback = function()
-        GroupViewportWide:SetObject(MakeCube(Color3.fromHex("#EF4F1D")))
-    end,
-})
-
--- */  Tab 3: Viewport directly in Tab  /* --
-local PlainTab = Window:Tab({
-    Title = "In Tab",
-    Icon = "monitor",
-    Desc = "Viewport directly inside a Tab, no wrappers",
-})
-
-local PlainViewport = PlainTab:Viewport({
-    Object = MakeStack(),
-    Interactive = true,
-    AutoRotate = true,
-    ShowGrid = true,
-    Lighting = {
-        Brightness = 2,
-        Color = Color3.fromRGB(255, 255, 255),
-        Range = 30,
-    },
-    Height = 260,
-})
-
-PlainTab:Paragraph({
-    Title = "Controls",
-    Desc = "Drag — orbit  |  Scroll / Pinch — zoom  |  Shift+Drag / Right Click — pan",
-})
-
-local HStackPresets = PlainTab:HStack()
-local PresetLeft = HStackPresets:VStack()
-local PresetRight = HStackPresets:VStack()
-
-PresetLeft:Button({
-    Title = "Isometric",
-    Justify = "Center",
-    Callback = function()
-        PlainViewport:SetCameraPreset("Isometric")
-    end,
-})
-
-PresetLeft:Button({
-    Title = "Top",
-    Justify = "Center",
-    Callback = function()
-        PlainViewport:SetCameraPreset("Top")
-    end,
-})
-
-PresetRight:Button({
-    Title = "Front",
-    Justify = "Center",
-    Callback = function()
-        PlainViewport:SetCameraPreset("Front")
-    end,
-})
-
-PresetRight:Button({
-    Title = "Reset",
-    Icon = "rotate-ccw",
-    Justify = "Center",
-    Callback = function()
-        PlainViewport:ResetCamera()
-    end,
-})
-
-PlainTab:Slider({
-    Title = "Height",
-    Min = 120,
-    Max = 400,
-    Value = 260,
+BoxSection:Slider({
+    Title = "Thickness",
+    Min = 1,
+    Max = 4,
+    Value = 2,
     Callback = function(v)
-        PlainViewport:SetHeight(v)
+        Settings.Thickness = math.floor(v)
     end,
+})
+
+BoxSection:Toggle({
+    Title = "Fill",
+    Value = false,
+    Callback = function(v)
+        Settings.Fill = v
+    end,
+})
+
+BoxSection:Colorpicker({
+    Title = "Box Color",
+    Default = Settings.BoxColor,
+    Callback = function(color)
+        Settings.BoxColor = color
+    end,
+})
+
+BoxSection:Colorpicker({
+    Title = "Fill Color",
+    Default = Settings.FillColor,
+    Callback = function(color)
+        Settings.FillColor = color
+    end,
+})
+
+local InfoSection = VisualsTab:Section({
+    Title = "Extra",
+    Icon = "tag",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+InfoSection:Toggle({
+    Title = "Health Bar",
+    Value = true,
+    Callback = function(v)
+        Settings.HealthBar = v
+    end,
+})
+
+InfoSection:Toggle({
+    Title = "Name",
+    Value = true,
+    Callback = function(v)
+        Settings.Name = v
+    end,
+})
+
+InfoSection:Toggle({
+    Title = "Distance",
+    Value = true,
+    Callback = function(v)
+        Settings.Distance = v
+    end,
+})
+
+InfoSection:Toggle({
+    Title = "Snapline",
+    Value = false,
+    Callback = function(v)
+        Settings.Snapline = v
+    end,
+})
+
+InfoSection:Colorpicker({
+    Title = "Snapline Color",
+    Default = Settings.SnapColor,
+    Callback = function(color)
+        Settings.SnapColor = color
+    end,
+})
+
+InfoSection:Button({
+    Title = "Refresh Character",
+    Icon = "refresh-ccw",
+    Desc = "Re-clone your character into the preview",
+    Callback = function()
+        Viewport:SetObject(CloneCharacter())
+        UpdateCorners()
+        Viewport:Focus()
+    end,
+})
+
+VisualsTab:Paragraph({
+    Title = "How it works",
+    Desc = "Your character is cloned into the viewport and a billboard box is projected around it every frame — orbit the camera and the ESP tracks the model, just like in game",
 })
 
 Window:SelectTab(1)
