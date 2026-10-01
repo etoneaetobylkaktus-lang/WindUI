@@ -1,6 +1,7 @@
 return {
 	Elements = {
 		Paragraph = require("./Paragraph"),
+		TelegramParagraph = require("./TelegramParagraph"),
 		Button = require("./Button"),
 		Toggle = require("./Toggle"),
 		Slider = require("./Slider"),
