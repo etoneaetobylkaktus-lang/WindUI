@@ -20,7 +20,7 @@ function Element:New(Config)
 		Desc = Chart.Desc,
 		Parent = Config.Parent,
 		Window = Config.Window,
-		Justify = "Start",
+		Justify = "Between",
 		Scalable = true,
 		Tab = Config.Tab,
 		Index = Config.Index,
