@@ -52,6 +52,8 @@ function Element:New(Config: ConfigType)
 	local AutoRotateActive = false
 	local AutoRotateResumeTimer = nil
 	local InitialCameraCFrame = nil
+	local StopAutoRotate
+	local ScheduleAutoRotateResume
 
 	local Main = Creator.NewRoundFrame(Config.Window.ElementConfig.UICorner, "Squircle", {
 		Size = UDim2.new(1, 0, 0, Viewport.Height),
@@ -99,9 +101,31 @@ function Element:New(Config: ConfigType)
 		}),
 	})
 
+	local CanvasGroup = Main:FindFirstChild("CanvasGroup") or Main:FindFirstChildWhichIsA("CanvasGroup", true)
+	if not CanvasGroup then
+		CanvasGroup = New("CanvasGroup", {
+			Name = "CanvasGroup",
+			Size = UDim2.new(1, 0, 1, 0),
+			BackgroundTransparency = 1,
+			Parent = Main,
+		})
+	end
+
+	local ViewportFrame = CanvasGroup:FindFirstChild("Viewport") or CanvasGroup:FindFirstChildWhichIsA("ViewportFrame", true)
+	if not ViewportFrame then
+		ViewportFrame = New("ViewportFrame", {
+			Name = "Viewport",
+			Size = UDim2.new(1, 0, 1, 0),
+			BackgroundTransparency = 1,
+			CurrentCamera = Viewport.Camera,
+			Active = Viewport.Interactive,
+			Parent = CanvasGroup,
+		}, { Viewport.Object })
+	end
+
 	local function IsTouchInsideViewport(Position)
-		local AbsPos = Main.CanvasGroup.Viewport.AbsolutePosition
-		local Size = Main.CanvasGroup.Viewport.AbsoluteSize
+		local AbsPos = ViewportFrame.AbsolutePosition
+		local Size = ViewportFrame.AbsoluteSize
 
 		return Position.X >= AbsPos.X
 			and Position.X <= AbsPos.X + Size.X
@@ -115,24 +139,24 @@ function Element:New(Config: ConfigType)
 		Light.Brightness = Config.Lighting.Brightness or 1
 		Light.Color = Config.Lighting.Color or Color3.fromRGB(255, 255, 255)
 		Light.Range = Config.Lighting.Range or 30
-		Light.Parent = Main.CanvasGroup.Viewport
+		Light.Parent = ViewportFrame
 		Viewport.PointLight = Light
 	end
 
 	-- Store grid reference if enabled
 	if Config.ShowGrid then
-		Viewport.GridFrame = Main.CanvasGroup:FindFirstChild("GridOverlay")
+		Viewport.GridFrame = CanvasGroup:FindFirstChild("GridOverlay")
 	end
 
 	local CurInput = Config.WindUI.GenerateGUID()
 
-	Creator.AddSignal(Main.CanvasGroup.Viewport.MouseEnter, function()
+	Creator.AddSignal(ViewportFrame.MouseEnter, function()
 		if Viewport.Interactive then
 			Config.Tab.UIElements.ContainerFrame.ScrollingEnabled = false
 		end
 	end)
 
-	Creator.AddSignal(Main.CanvasGroup.Viewport.InputEnded, function(Input)
+	Creator.AddSignal(ViewportFrame.InputEnded, function(Input)
 		if
 			Input.UserInputType == Enum.UserInputType.MouseMovement
 			or Input.UserInputType == Enum.UserInputType.Touch
@@ -141,7 +165,7 @@ function Element:New(Config: ConfigType)
 		end
 	end)
 
-	Creator.AddSignal(Main.CanvasGroup.Viewport.InputBegan, function(Input)
+	Creator.AddSignal(ViewportFrame.InputBegan, function(Input)
 		if Viewport.Interactive then
 			local ShiftHeld = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
 			
@@ -236,7 +260,7 @@ function Element:New(Config: ConfigType)
 		end
 	end)
 
-	Creator.AddSignal(Main.CanvasGroup.Viewport.InputChanged, function(Input)
+	Creator.AddSignal(ViewportFrame.InputChanged, function(Input)
 		if Viewport.Interactive then
 			if not Viewport.RotateOnly and Input.UserInputType == Enum.UserInputType.MouseWheel then
 				local ZoomAmount = Input.Position.Z * 2
@@ -312,7 +336,7 @@ function Element:New(Config: ConfigType)
 		FocusCamera()
 	end
 	
-	local function StopAutoRotate()
+	StopAutoRotate = function()
 		if AutoRotateConnection then
 			AutoRotateConnection:Disconnect()
 			AutoRotateConnection = nil
@@ -341,7 +365,7 @@ function Element:New(Config: ConfigType)
 		end)
 	end
 	
-	local function ScheduleAutoRotateResume()
+	ScheduleAutoRotateResume = function()
 		if not Viewport.AutoRotate then return end
 		
 		if AutoRotateResumeTimer then
@@ -366,7 +390,7 @@ function Element:New(Config: ConfigType)
 		end
 
 		Viewport.Object = Object
-		Viewport.Object.Parent = Main.CanvasGroup.Viewport
+		Viewport.Object.Parent = ViewportFrame
 	end
 
 	function Viewport:SetHeight(Height)
@@ -381,18 +405,18 @@ function Element:New(Config: ConfigType)
 
 	function Viewport:SetCamera(Camera)
 		Viewport.Camera = Camera
-		Main.CanvasGroup.Viewport.CurrentCamera = Camera
+		ViewportFrame.CurrentCamera = Camera
 	end
 
 	function Viewport:SetInteractive(Interactive)
 		Viewport.Interactive = Interactive
-		Main.CanvasGroup.Viewport.Active = Interactive
+		ViewportFrame.Active = Interactive
 	end
 
 	function Viewport:SetLighting(LightConfig)
 		if not Viewport.PointLight then
 			local Light = Instance.new("PointLight")
-			Light.Parent = Main.CanvasGroup.Viewport
+			Light.Parent = ViewportFrame
 			Viewport.PointLight = Light
 		end
 
@@ -414,7 +438,7 @@ function Element:New(Config: ConfigType)
 				Size = UDim2.new(1, 0, 1, 0),
 				BackgroundTransparency = 1,
 				ZIndex = 10,
-				Parent = Main.CanvasGroup,
+				Parent = CanvasGroup,
 			}, {
 				New("UICorner", {
 					CornerRadius = UDim.new(0, Config.Window.ElementConfig.UICorner),

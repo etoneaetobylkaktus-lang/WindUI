@@ -35970,8 +35970,10 @@ local ax
 local ay=false
 local az
 local aA
+local aB
+local b
 
-local aB=al.NewRoundFrame(ap.Window.ElementConfig.UICorner,"Squircle",{
+local d=al.NewRoundFrame(ap.Window.ElementConfig.UICorner,"Squircle",{
 Size=UDim2.new(1,0,0,aq.Height),
 Parent=ap.Parent,
 ThemeTag={
@@ -36017,90 +36019,112 @@ ImageColor3=Color3.fromRGB(255,255,255),
 }),
 })
 
-local function IsTouchInsideViewport(b)
-local d=aB.CanvasGroup.Viewport.AbsolutePosition
-local f=aB.CanvasGroup.Viewport.AbsoluteSize
+local f=d:FindFirstChild"CanvasGroup"or d:FindFirstChildWhichIsA("CanvasGroup",true)
+if not f then
+f=am("CanvasGroup",{
+Name="CanvasGroup",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+Parent=d,
+})
+end
 
-return b.X>=d.X
-and b.X<=d.X+f.X
-and b.Y>=d.Y
-and b.Y<=d.Y+f.Y
+local g=f:FindFirstChild"Viewport"or f:FindFirstChildWhichIsA("ViewportFrame",true)
+if not g then
+g=am("ViewportFrame",{
+Name="Viewport",
+Size=UDim2.new(1,0,1,0),
+BackgroundTransparency=1,
+CurrentCamera=aq.Camera,
+Active=aq.Interactive,
+Parent=f,
+},{aq.Object})
+end
+
+local function IsTouchInsideViewport(h)
+local i=g.AbsolutePosition
+local l=g.AbsoluteSize
+
+return h.X>=i.X
+and h.X<=i.X+l.X
+and h.Y>=i.Y
+and h.Y<=i.Y+l.Y
 end
 
 
 if ap.Lighting then
-local b=Instance.new"PointLight"
-b.Brightness=ap.Lighting.Brightness or 1
-b.Color=ap.Lighting.Color or Color3.fromRGB(255,255,255)
-b.Range=ap.Lighting.Range or 30
-b.Parent=aB.CanvasGroup.Viewport
-aq.PointLight=b
+local h=Instance.new"PointLight"
+h.Brightness=ap.Lighting.Brightness or 1
+h.Color=ap.Lighting.Color or Color3.fromRGB(255,255,255)
+h.Range=ap.Lighting.Range or 30
+h.Parent=g
+aq.PointLight=h
 end
 
 
 if ap.ShowGrid then
-aq.GridFrame=aB.CanvasGroup:FindFirstChild"GridOverlay"
+aq.GridFrame=f:FindFirstChild"GridOverlay"
 end
 
-local b=ap.WindUI.GenerateGUID()
+local h=ap.WindUI.GenerateGUID()
 
-al.AddSignal(aB.CanvasGroup.Viewport.MouseEnter,function()
+al.AddSignal(g.MouseEnter,function()
 if aq.Interactive then
 ap.Tab.UIElements.ContainerFrame.ScrollingEnabled=false
 end
 end)
 
-al.AddSignal(aB.CanvasGroup.Viewport.InputEnded,function(d)
+al.AddSignal(g.InputEnded,function(i)
 if
-d.UserInputType==Enum.UserInputType.MouseMovement
-or d.UserInputType==Enum.UserInputType.Touch
+i.UserInputType==Enum.UserInputType.MouseMovement
+or i.UserInputType==Enum.UserInputType.Touch
 then
 ap.Tab.UIElements.ContainerFrame.ScrollingEnabled=true
 end
 end)
 
-al.AddSignal(aB.CanvasGroup.Viewport.InputBegan,function(d)
+al.AddSignal(g.InputBegan,function(i)
 if aq.Interactive then
-local f=af:IsKeyDown(Enum.KeyCode.LeftShift)or af:IsKeyDown(Enum.KeyCode.RightShift)
+local l=af:IsKeyDown(Enum.KeyCode.LeftShift)or af:IsKeyDown(Enum.KeyCode.RightShift)
 
 if not aq.RotateOnly and(
-(d.UserInputType==Enum.UserInputType.MouseButton1 and f)
-or(d.UserInputType==Enum.UserInputType.MouseButton2)
+(i.UserInputType==Enum.UserInputType.MouseButton1 and l)
+or(i.UserInputType==Enum.UserInputType.MouseButton2)
 )
 then
-if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=h then
 return
 end
 
-ap.WindUI.CurrentInput=b
+ap.WindUI.CurrentInput=h
 as=true
-av=d.Position
+av=i.Position
 elseif
-(d.UserInputType==Enum.UserInputType.MouseButton1)
-or(d.UserInputType==Enum.UserInputType.Touch and not at)
+(i.UserInputType==Enum.UserInputType.MouseButton1)
+or(i.UserInputType==Enum.UserInputType.Touch and not at)
 then
-if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=h then
 return
 end
 
-ap.WindUI.CurrentInput=b
+ap.WindUI.CurrentInput=h
 
 ar=true
-av=d.Position
+av=i.Position
 
-StopAutoRotate()
+aB()
 end
 end
 end)
 
-al.AddSignal(af.InputEnded,function(d)
+al.AddSignal(af.InputEnded,function(i)
 if aq.Interactive then
 if
-d.UserInputType==Enum.UserInputType.MouseButton1
-or d.UserInputType==Enum.UserInputType.MouseButton2
-or d.UserInputType==Enum.UserInputType.Touch
+i.UserInputType==Enum.UserInputType.MouseButton1
+or i.UserInputType==Enum.UserInputType.MouseButton2
+or i.UserInputType==Enum.UserInputType.Touch
 then
-if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
+if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=h then
 return
 end
 
@@ -36109,103 +36133,103 @@ ap.WindUI.CurrentInput=nil
 ar=false
 as=false
 
-ScheduleAutoRotateResume()
+b()
 end
 end
 end)
 
-al.AddSignal(af.InputChanged,function(d)
+al.AddSignal(af.InputChanged,function(i)
 if aq.Interactive and not aq.RotateOnly and as and not at then
 if
-d.UserInputType==Enum.UserInputType.MouseMovement
-or d.UserInputType==Enum.UserInputType.Touch
+i.UserInputType==Enum.UserInputType.MouseMovement
+or i.UserInputType==Enum.UserInputType.Touch
 then
-local f=d.Position-av
-av=d.Position
+local l=i.Position-av
+av=i.Position
 
-local g=aq.Camera
-local h=0.01
-local i=g.CFrame.RightVector
-local l=g.CFrame.UpVector
+local m=aq.Camera
+local p=0.01
+local r=m.CFrame.RightVector
+local u=m.CFrame.UpVector
 
-g.CFrame=g.CFrame-i*f.X*h+l*f.Y*h
+m.CFrame=m.CFrame-r*l.X*p+u*l.Y*p
 end
 elseif aq.Interactive and ar and not at then
 if
-d.UserInputType==Enum.UserInputType.MouseMovement
-or d.UserInputType==Enum.UserInputType.Touch
+i.UserInputType==Enum.UserInputType.MouseMovement
+or i.UserInputType==Enum.UserInputType.Touch
 then
-local f=d.Position-av
-av=d.Position
+local l=i.Position-av
+av=i.Position
 
-local g=aq.Object:GetPivot().Position
-local h=aq.Camera
+local m=aq.Object:GetPivot().Position
+local p=aq.Camera
 
-local i=CFrame.fromAxisAngle(Vector3.new(0,1,0),-f.X*0.02)
-h.CFrame=CFrame.new(g)*i*CFrame.new(-g)*h.CFrame
+local r=CFrame.fromAxisAngle(Vector3.new(0,1,0),-l.X*0.02)
+p.CFrame=CFrame.new(m)*r*CFrame.new(-m)*p.CFrame
 
-local l=CFrame.fromAxisAngle(h.CFrame.RightVector,-f.Y*0.02)
-local m=CFrame.new(g)*l*CFrame.new(-g)*h.CFrame
+local u=CFrame.fromAxisAngle(p.CFrame.RightVector,-l.Y*0.02)
+local v=CFrame.new(m)*u*CFrame.new(-m)*p.CFrame
 
-if m.UpVector.Y>0.1 then
-h.CFrame=m
+if v.UpVector.Y>0.1 then
+p.CFrame=v
 end
 end
 end
 end)
 
-al.AddSignal(aB.CanvasGroup.Viewport.InputChanged,function(d)
+al.AddSignal(g.InputChanged,function(i)
 if aq.Interactive then
-if not aq.RotateOnly and d.UserInputType==Enum.UserInputType.MouseWheel then
-local f=d.Position.Z*2
-aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*f
+if not aq.RotateOnly and i.UserInputType==Enum.UserInputType.MouseWheel then
+local l=i.Position.Z*2
+aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*l
 
-StopAutoRotate()
-ScheduleAutoRotateResume()
+aB()
+b()
 end
 end
 end)
 
-al.AddSignal(af.TouchPinch,function(d,f,g,h)
-if not IsTouchInsideViewport(d[1])or not IsTouchInsideViewport(d[2])then
+al.AddSignal(af.TouchPinch,function(i,l,m,p)
+if not IsTouchInsideViewport(i[1])or not IsTouchInsideViewport(i[2])then
 return
 end
 if aq.Interactive and not aq.RotateOnly then
-if h==Enum.UserInputState.Begin then
+if p==Enum.UserInputState.Begin then
 at=true
 ar=false
 as=false
-au=(d[1]-d[2]).Magnitude
+au=(i[1]-i[2]).Magnitude
 
-StopAutoRotate()
-elseif h==Enum.UserInputState.Change then
+aB()
+elseif p==Enum.UserInputState.Change then
 if at then
-local i=(d[1]-d[2]).Magnitude
-local l=(i-au)*0.03
-au=i
-aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*l
+local r=(i[1]-i[2]).Magnitude
+local u=(r-au)*0.03
+au=r
+aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*u
 end
-elseif h==Enum.UserInputState.End or h==Enum.UserInputState.Cancel then
+elseif p==Enum.UserInputState.End or p==Enum.UserInputState.Cancel then
 at=false
 
-ScheduleAutoRotateResume()
+b()
 end
 end
 end)
 
 
-al.AddSignal(af.TouchStarted,function(d,f)
-if IsTouchInsideViewport(d.Position)and aq.Interactive and not aq.RotateOnly then
+al.AddSignal(af.TouchStarted,function(i,l)
+if IsTouchInsideViewport(i.Position)and aq.Interactive and not aq.RotateOnly then
 aw=aw+1
 if aw==2 and not at then
 as=true
 ar=false
-av=d.Position
+av=i.Position
 end
 end
 end)
 
-al.AddSignal(af.TouchEnded,function(d,f)
+al.AddSignal(af.TouchEnded,function(i,l)
 if aq.Interactive then
 aw=math.max(0,aw-1)
 if aw<2 then
@@ -36215,14 +36239,14 @@ end
 end)
 
 local function FocusCamera()
-local d=aq.Object:IsA"BasePart"and aq.Object.Size
+local i=aq.Object:IsA"BasePart"and aq.Object.Size
 or select(2,aq.Object:GetBoundingBox(0))
-local f=math.max(d.X,d.Y,d.Z)
-local g=f*2
-local h=aq.Object:GetPivot().Position
+local l=math.max(i.X,i.Y,i.Z)
+local m=l*2
+local p=aq.Object:GetPivot().Position
 
 aq.Camera.CFrame=
-CFrame.new(h+Vector3.new(0,f/2,g),h)
+CFrame.new(p+Vector3.new(0,l/2,m),p)
 aA=aq.Camera.CFrame
 end
 
@@ -36230,7 +36254,7 @@ if aq.Focused then
 FocusCamera()
 end
 
-local function StopAutoRotate()
+aB=function()
 if ax then
 ax:Disconnect()
 ax=nil
@@ -36245,21 +36269,21 @@ end
 local function StartAutoRotate()
 if not aq.AutoRotate then return end
 
-StopAutoRotate()
+aB()
 ay=true
 
-ax=ai.RenderStepped:Connect(function(d)
+ax=ai.RenderStepped:Connect(function(i)
 if not ay or ar or at or as then
 return
 end
 
-local f=aq.Object:GetPivot().Position
-local g=CFrame.fromAxisAngle(Vector3.new(0,1,0),-0.5*d)
-aq.Camera.CFrame=CFrame.new(f)*g*CFrame.new(-f)*aq.Camera.CFrame
+local l=aq.Object:GetPivot().Position
+local m=CFrame.fromAxisAngle(Vector3.new(0,1,0),-0.5*i)
+aq.Camera.CFrame=CFrame.new(l)*m*CFrame.new(-l)*aq.Camera.CFrame
 end)
 end
 
-local function ScheduleAutoRotateResume()
+b=function()
 if not aq.AutoRotate then return end
 
 if az then
@@ -36275,64 +36299,64 @@ if aq.AutoRotate then
 StartAutoRotate()
 end
 
-function aq.SetObject(d,f,g)
-if g then
-f=f:Clone()
+function aq.SetObject(i,l,m)
+if m then
+l=l:Clone()
 end
 if aq.Object then
 aq.Object:Destroy()
 end
 
-aq.Object=f
-aq.Object.Parent=aB.CanvasGroup.Viewport
+aq.Object=l
+aq.Object.Parent=g
 end
 
-function aq.SetHeight(d,f)
-aB.Size=UDim2.new(1,0,0,f)
+function aq.SetHeight(i,l)
+d.Size=UDim2.new(1,0,0,l)
 end
 
-function aq.Focus(d)
+function aq.Focus(i)
 if aq.Object then
 FocusCamera()
 end
 end
 
-function aq.SetCamera(d,f)
-aq.Camera=f
-aB.CanvasGroup.Viewport.CurrentCamera=f
+function aq.SetCamera(i,l)
+aq.Camera=l
+g.CurrentCamera=l
 end
 
-function aq.SetInteractive(d,f)
-aq.Interactive=f
-aB.CanvasGroup.Viewport.Active=f
+function aq.SetInteractive(i,l)
+aq.Interactive=l
+g.Active=l
 end
 
-function aq.SetLighting(d,f)
+function aq.SetLighting(i,l)
 if not aq.PointLight then
-local g=Instance.new"PointLight"
-g.Parent=aB.CanvasGroup.Viewport
-aq.PointLight=g
+local m=Instance.new"PointLight"
+m.Parent=g
+aq.PointLight=m
 end
 
-if f.Brightness then
-aq.PointLight.Brightness=f.Brightness
+if l.Brightness then
+aq.PointLight.Brightness=l.Brightness
 end
-if f.Color then
-aq.PointLight.Color=f.Color
+if l.Color then
+aq.PointLight.Color=l.Color
 end
-if f.Range then
-aq.PointLight.Range=f.Range
+if l.Range then
+aq.PointLight.Range=l.Range
 end
 end
 
-function aq.SetGrid(d,f)
-if f and not aq.GridFrame then
-local g=am("Frame",{
+function aq.SetGrid(i,l)
+if l and not aq.GridFrame then
+local m=am("Frame",{
 Name="GridOverlay",
 Size=UDim2.new(1,0,1,0),
 BackgroundTransparency=1,
 ZIndex=10,
-Parent=aB.CanvasGroup,
+Parent=f,
 },{
 am("UICorner",{
 CornerRadius=UDim.new(0,ap.Window.ElementConfig.UICorner),
@@ -36347,75 +36371,75 @@ TileSize=UDim2.new(0,50,0,50),
 ImageColor3=Color3.fromRGB(255,255,255),
 }),
 })
-aq.GridFrame=g
-elseif not f and aq.GridFrame then
+aq.GridFrame=m
+elseif not l and aq.GridFrame then
 aq.GridFrame:Destroy()
 aq.GridFrame=nil
 end
 end
 
-function aq.SetAutoRotate(d,f)
-aq.AutoRotate=f
+function aq.SetAutoRotate(i,l)
+aq.AutoRotate=l
 
-if f then
+if l then
 StartAutoRotate()
 else
-StopAutoRotate()
+aB()
 end
 end
 
-function aq.SetCameraPreset(d,f)
+function aq.SetCameraPreset(i,l)
 if not aq.Object then return end
 
-local g=aq.Object:IsA"BasePart"and aq.Object.Size
+local m=aq.Object:IsA"BasePart"and aq.Object.Size
 or select(2,aq.Object:GetBoundingBox(0))
-local h=math.max(g.X,g.Y,g.Z)
-local i=h*2
-local l=aq.Object:GetPivot().Position
+local p=math.max(m.X,m.Y,m.Z)
+local r=p*2
+local u=aq.Object:GetPivot().Position
 
-local m={
-Front=CFrame.new(l+Vector3.new(0,0,i),l),
-Back=CFrame.new(l+Vector3.new(0,0,-i),l),
-Left=CFrame.new(l+Vector3.new(-i,0,0),l),
-Right=CFrame.new(l+Vector3.new(i,0,0),l),
-Top=CFrame.new(l+Vector3.new(0,i,0),l),
-Bottom=CFrame.new(l+Vector3.new(0,-i,0),l),
-Isometric=CFrame.new(l+Vector3.new(i,i,i),l),
+local v={
+Front=CFrame.new(u+Vector3.new(0,0,r),u),
+Back=CFrame.new(u+Vector3.new(0,0,-r),u),
+Left=CFrame.new(u+Vector3.new(-r,0,0),u),
+Right=CFrame.new(u+Vector3.new(r,0,0),u),
+Top=CFrame.new(u+Vector3.new(0,r,0),u),
+Bottom=CFrame.new(u+Vector3.new(0,-r,0),u),
+Isometric=CFrame.new(u+Vector3.new(r,r,r),u),
 }
 
-local p=m[f]
-if not p then return end
+local x=v[l]
+if not x then return end
 
-StopAutoRotate()
+aB()
 
-local r=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-local u=ak:Create(aq.Camera,r,{CFrame=p})
-u:Play()
+local z=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+local A=ak:Create(aq.Camera,z,{CFrame=x})
+A:Play()
 
-u.Completed:Connect(function()
-ScheduleAutoRotateResume()
+A.Completed:Connect(function()
+b()
 end)
 end
 
-function aq.ResetCamera(d)
+function aq.ResetCamera(i)
 if not aA then return end
 
-StopAutoRotate()
+aB()
 
-local f=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-local g=ak:Create(aq.Camera,f,{CFrame=aA})
-g:Play()
+local l=TweenInfo.new(0.5,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
+local m=ak:Create(aq.Camera,l,{CFrame=aA})
+m:Play()
 
-g.Completed:Connect(function()
-ScheduleAutoRotateResume()
+m.Completed:Connect(function()
+b()
 end)
 end
 
-function aq.SetFOV(d,f)
-aq.Camera.FieldOfView=f
+function aq.SetFOV(i,l)
+aq.Camera.FieldOfView=l
 end
 
-aq.Main=aB
+aq.Main=d
 
 return aq.__type,aq
 end
