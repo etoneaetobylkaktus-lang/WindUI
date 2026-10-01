@@ -72,13 +72,14 @@ local PreviewSection = VisualsTab:Section({
 local Viewport = PreviewSection:Viewport({
     Object = CloneCharacter(),
     Interactive = true,
-    AutoRotate = true,
+    RotateOnly = true,
+    AutoRotate = false,
     Lighting = {
         Brightness = 1.5,
         Color = Color3.fromRGB(255, 255, 255),
         Range = 40,
     },
-    Height = 300,
+    Height = 220,
 })
 
 -- */  ESP Overlay (2D, drawn over the viewport)  /* --
@@ -108,7 +109,104 @@ local Settings = {
     Distance = true,
     Fill = false,
     Snapline = false,
+    WorldESP = true,
 }
+
+-- AlwaysOnTop billboard boxes for every other player.
+local WorldBoxes = {}
+
+local function RemoveWorldBox(player)
+    if WorldBoxes[player] then
+        WorldBoxes[player]:Destroy()
+        WorldBoxes[player] = nil
+    end
+end
+
+local function CreateWorldBox(player)
+    RemoveWorldBox(player)
+    if player == LocalPlayer then return end
+
+    local character = player.Character
+    local root = character and character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "WindUI_ESP_" .. player.Name
+    billboard.Adornee = root
+    billboard.AlwaysOnTop = true
+    billboard.LightInfluence = 0
+    billboard.Size = UDim2.fromOffset(100, 150)
+    billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+    billboard.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+    local box = Instance.new("Frame")
+    box.Name = "Box"
+    box.BackgroundTransparency = 1
+    box.BorderSizePixel = 0
+    box.Size = UDim2.fromScale(1, 1)
+    box.Parent = billboard
+
+    local stroke = Instance.new("UIStroke")
+    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    stroke.Thickness = Settings.Thickness
+    stroke.Color = Settings.BoxColor
+    stroke.Parent = box
+
+    local label = Instance.new("TextLabel")
+    label.BackgroundTransparency = 1
+    label.Font = Enum.Font.GothamBold
+    label.TextColor3 = Settings.BoxColor
+    label.TextStrokeTransparency = 0.25
+    label.TextSize = 11
+    label.Text = player.Name
+    label.Size = UDim2.new(1, 0, 0, 18)
+    label.Position = UDim2.new(0, 0, 0, -18)
+    label.Parent = billboard
+
+    WorldBoxes[player] = billboard
+end
+
+local function RefreshWorldBoxes()
+    for _, player in ipairs(Players:GetPlayers()) do
+        CreateWorldBox(player)
+    end
+end
+
+for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        player.CharacterAdded:Connect(function()
+            task.wait(0.25)
+            CreateWorldBox(player)
+        end)
+        CreateWorldBox(player)
+    end
+end
+
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        task.wait(0.25)
+        CreateWorldBox(player)
+    end)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    RemoveWorldBox(player)
+end)
+
+RunService.RenderStepped:Connect(function()
+    for player, billboard in pairs(WorldBoxes) do
+        local stroke = billboard:FindFirstChild("Box", true)
+            and billboard.Box:FindFirstChildOfClass("UIStroke")
+        local visible = Settings.Enabled and Settings.WorldESP and player.Character ~= nil
+        billboard.Enabled = visible
+        if stroke then
+            stroke.Color = Settings.BoxColor
+            stroke.Thickness = Settings.Thickness
+        end
+        local label = billboard:FindFirstChildOfClass("TextLabel")
+        if label then label.TextColor3 = Settings.BoxColor end
+    end
+end)
 
 -- full box (one frame + stroke)
 local FullBox = New("Frame", {
@@ -453,6 +551,15 @@ InfoSection:Toggle({
     Value = false,
     Callback = function(v)
         Settings.Snapline = v
+    end,
+})
+
+InfoSection:Toggle({
+    Title = "World ESP",
+    Desc = "Always-on-top boxes for every other player",
+    Value = true,
+    Callback = function(v)
+        Settings.WorldESP = v
     end,
 })
 

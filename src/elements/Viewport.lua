@@ -20,6 +20,7 @@ type ConfigType = {
 	AutoRotate: boolean?,
 	Lighting: { Brightness: number?, Color: Color3?, Range: number? }?,
 	ShowGrid: boolean?,
+	RotateOnly: boolean?,
 
 	Window: any, -- later
 	WindUI: any, -- later
@@ -36,6 +37,7 @@ function Element:New(Config: ConfigType)
 		Height = Config.Height or 200,
 		Focused = Config.Focused ~= false,
 		AutoRotate = Config.AutoRotate or false,
+		RotateOnly = Config.RotateOnly or false,
 		PointLight = nil,
 		GridFrame = nil,
 	}
@@ -143,9 +145,10 @@ function Element:New(Config: ConfigType)
 		if Viewport.Interactive then
 			local ShiftHeld = UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift)
 			
-			if
+			if not Viewport.RotateOnly and (
 				(Input.UserInputType == Enum.UserInputType.MouseButton1 and ShiftHeld)
 				or (Input.UserInputType == Enum.UserInputType.MouseButton2)
+			)
 			then
 				if Config.WindUI.CurrentInput and Config.WindUI.CurrentInput ~= CurInput then
 					return
@@ -194,7 +197,7 @@ function Element:New(Config: ConfigType)
 	end)
 
 	Creator.AddSignal(UserInputService.InputChanged, function(Input)
-		if Viewport.Interactive and Panning and not Pinching then
+		if Viewport.Interactive and not Viewport.RotateOnly and Panning and not Pinching then
 			if
 				Input.UserInputType == Enum.UserInputType.MouseMovement
 				or Input.UserInputType == Enum.UserInputType.Touch
@@ -235,7 +238,7 @@ function Element:New(Config: ConfigType)
 
 	Creator.AddSignal(Main.CanvasGroup.Viewport.InputChanged, function(Input)
 		if Viewport.Interactive then
-			if Input.UserInputType == Enum.UserInputType.MouseWheel then
+			if not Viewport.RotateOnly and Input.UserInputType == Enum.UserInputType.MouseWheel then
 				local ZoomAmount = Input.Position.Z * 2
 				Viewport.Camera.CFrame += Viewport.Camera.CFrame.LookVector * ZoomAmount
 				
@@ -249,7 +252,7 @@ function Element:New(Config: ConfigType)
 		if not IsTouchInsideViewport(touchPositions[1]) or not IsTouchInsideViewport(touchPositions[2]) then
 			return
 		end
-		if Viewport.Interactive then
+		if Viewport.Interactive and not Viewport.RotateOnly then
 			if state == Enum.UserInputState.Begin then
 				Pinching = true
 				Dragging = false
@@ -274,7 +277,7 @@ function Element:New(Config: ConfigType)
 
 	-- Two-finger pan detection for mobile
 	Creator.AddSignal(UserInputService.TouchStarted, function(touch, gameProcessed)
-		if IsTouchInsideViewport(touch.Position) and Viewport.Interactive then
+		if IsTouchInsideViewport(touch.Position) and Viewport.Interactive and not Viewport.RotateOnly then
 			PanTouchCount = PanTouchCount + 1
 			if PanTouchCount == 2 and not Pinching then
 				Panning = true

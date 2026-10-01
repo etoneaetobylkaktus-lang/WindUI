@@ -23,6 +23,7 @@ Focused:boolean,
 AutoRotate:boolean?,
 Lighting:{Brightness:number?,Color:Color3?,Range:number?}?,
 ShowGrid:boolean?,
+RotateOnly:boolean?,
 
 Window:any,
 WindUI:any,
@@ -35685,6 +35686,7 @@ local an={}
 
 
 
+
 function an.New(ao,ap:ConfigType__DARKLUA_TYPE_a)
 local aq={
 __type="Viewport",
@@ -35694,6 +35696,7 @@ Interactive=ap.Interactive or false,
 Height=ap.Height or 200,
 Focused=ap.Focused~=false,
 AutoRotate=ap.AutoRotate or false,
+RotateOnly=ap.RotateOnly or false,
 PointLight=nil,
 GridFrame=nil,
 }
@@ -35801,9 +35804,10 @@ al.AddSignal(aB.CanvasGroup.Viewport.InputBegan,function(d)
 if aq.Interactive then
 local f=af:IsKeyDown(Enum.KeyCode.LeftShift)or af:IsKeyDown(Enum.KeyCode.RightShift)
 
-if
+if not aq.RotateOnly and(
 (d.UserInputType==Enum.UserInputType.MouseButton1 and f)
 or(d.UserInputType==Enum.UserInputType.MouseButton2)
+)
 then
 if ap.WindUI.CurrentInput and ap.WindUI.CurrentInput~=b then
 return
@@ -35852,7 +35856,7 @@ end
 end)
 
 al.AddSignal(af.InputChanged,function(d)
-if aq.Interactive and as and not at then
+if aq.Interactive and not aq.RotateOnly and as and not at then
 if
 d.UserInputType==Enum.UserInputType.MouseMovement
 or d.UserInputType==Enum.UserInputType.Touch
@@ -35893,7 +35897,7 @@ end)
 
 al.AddSignal(aB.CanvasGroup.Viewport.InputChanged,function(d)
 if aq.Interactive then
-if d.UserInputType==Enum.UserInputType.MouseWheel then
+if not aq.RotateOnly and d.UserInputType==Enum.UserInputType.MouseWheel then
 local f=d.Position.Z*2
 aq.Camera.CFrame+=aq.Camera.CFrame.LookVector*f
 
@@ -35907,7 +35911,7 @@ al.AddSignal(af.TouchPinch,function(d,f,g,h)
 if not IsTouchInsideViewport(d[1])or not IsTouchInsideViewport(d[2])then
 return
 end
-if aq.Interactive then
+if aq.Interactive and not aq.RotateOnly then
 if h==Enum.UserInputState.Begin then
 at=true
 ar=false
@@ -35932,7 +35936,7 @@ end)
 
 
 al.AddSignal(af.TouchStarted,function(d,f)
-if IsTouchInsideViewport(d.Position)and aq.Interactive then
+if IsTouchInsideViewport(d.Position)and aq.Interactive and not aq.RotateOnly then
 aw=aw+1
 if aw==2 and not at then
 as=true
