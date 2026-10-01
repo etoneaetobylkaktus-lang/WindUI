@@ -1,8 +1,7 @@
 --[[
-    WindUI Viewport Demo
-    Showcases all Viewport features:
-    auto-rotate, interactive orbit/zoom/pan, grid floor,
-    dynamic lighting, camera presets, FOV control
+    WindUI Viewport Container Test
+    Tests Viewport inside: Section, Group, and plain Tab
+    One tab per container
 ]]
 
 local ok, WindUI = pcall(function()
@@ -10,59 +9,168 @@ local ok, WindUI = pcall(function()
 end)
 
 if not ok or not WindUI then
-    return warn("[ Viewport Demo ] Failed to load WindUI: " .. tostring(WindUI))
+    return warn("[ Viewport Test ] Failed to load WindUI: " .. tostring(WindUI))
 end
 
 local Window = WindUI:CreateWindow({
-    Title = "WindUI Viewport Demo",
-    Author = "viewport showcase",
-    Folder = "WindUIViewportDemo",
+    Title = "WindUI Viewport Containers",
+    Author = "section / group / tab",
+    Folder = "WindUIViewportContainers",
     ToggleKey = Enum.KeyCode.RightShift,
 })
 
--- */  Demo Object  /* --
-local function MakeDemoModel()
+-- */  Demo Models  /* --
+local function MakeCube(color, size)
+    local Part = Instance.new("Part")
+    Part.Size = Vector3.new(size or 3, size or 3, size or 3)
+    Part.Color = color or Color3.fromHex("#7775F2")
+    Part.Material = Enum.Material.Neon
+    Part.Anchored = true
+    return Part
+end
+
+local function MakeSphere(color)
+    local Part = Instance.new("Part")
+    Part.Shape = Enum.PartType.Ball
+    Part.Size = Vector3.new(4, 4, 4)
+    Part.Color = color or Color3.fromHex("#30FF6A")
+    Part.Material = Enum.Material.Neon
+    Part.Anchored = true
+    return Part
+end
+
+local function MakeStack()
     local Model = Instance.new("Model")
-
-    local Core = Instance.new("Part")
-    Core.Size = Vector3.new(3, 3, 3)
-    Core.Color = Color3.fromHex("#7775F2")
-    Core.Material = Enum.Material.Neon
-    Core.Anchored = true
-    Core.Parent = Model
-
-    local Ring = Instance.new("Part")
-    Ring.Size = Vector3.new(5, 0.5, 5)
-    Ring.Color = Color3.fromHex("#30FF6A")
-    Ring.Material = Enum.Material.Metal
-    Ring.Transparency = 0.3
-    Ring.Anchored = true
-    Ring.CFrame = CFrame.new(0, 2.5, 0) * CFrame.Angles(math.rad(45), 0, math.rad(45))
-    Ring.Parent = Model
-
-    local Base = Instance.new("Part")
-    Base.Size = Vector3.new(6, 0.3, 6)
-    Base.Color = Color3.fromHex("#1c1c1c")
-    Base.Material = Enum.Material.SmoothPlastic
-    Base.Anchored = true
-    Base.CFrame = CFrame.new(0, -2.5, 0)
-    Base.Parent = Model
-
-    Model.PrimaryPart = Core
+    local colors = { "#ECA201", "#257AF7", "#EF4F1D" }
+    for i, hex in ipairs(colors) do
+        local Part = Instance.new("Part")
+        Part.Size = Vector3.new(3 - i * 0.5, 1, 3 - i * 0.5)
+        Part.Color = Color3.fromHex(hex)
+        Part.Material = Enum.Material.SmoothPlastic
+        Part.Anchored = true
+        Part.CFrame = CFrame.new(0, -1.5 + i, 0)
+        Part.Parent = Model
+    end
     return Model
 end
 
-local DemoModel = MakeDemoModel()
-
--- */  Viewport Tab  /* --
-local ViewportTab = Window:Tab({
-    Title = "Viewport",
-    Icon = "box",
-    Desc = "3D object inside a UI tab — drag to rotate, scroll to zoom",
+-- */  Tab 1: Viewport inside Section  /* --
+local SectionTab = Window:Tab({
+    Title = "In Section",
+    Icon = "square-stack",
+    Desc = "Viewport nested inside a Section box",
 })
 
-local Viewport = ViewportTab:Viewport({
-    Object = DemoModel,
+local Section = SectionTab:Section({
+    Title = "Section Container",
+    Icon = "box",
+    Box = true,
+    BoxBorder = true,
+    Opened = true,
+})
+
+local SectionViewport = Section:Viewport({
+    Object = MakeCube(Color3.fromHex("#7775F2")),
+    Interactive = true,
+    AutoRotate = true,
+    Height = 200,
+})
+
+Section:Toggle({
+    Title = "Auto Rotate",
+    Value = true,
+    Callback = function(v)
+        SectionViewport:SetAutoRotate(v)
+    end,
+})
+
+-- viewport BELOW the section, still in same tab (section closed state test)
+local ClosedSection = SectionTab:Section({
+    Title = "Collapsed Section",
+    Icon = "package",
+    Box = true,
+    Opened = false,
+})
+
+local CollapsedViewport = ClosedSection:Viewport({
+    Object = MakeSphere(Color3.fromHex("#ECA201")),
+    Interactive = true,
+    Height = 200,
+})
+
+-- */  Tab 2: Viewport inside Group  /* --
+local GroupTab = Window:Tab({
+    Title = "In Group",
+    Icon = "layers",
+    Desc = "Two viewports side by side in an HStack group",
+})
+
+GroupTab:Paragraph({
+    Title = "Group Test",
+    Desc = "Viewports inside HStack > VStack groups",
+})
+
+local HStack = GroupTab:HStack()
+local VStackLeft = HStack:VStack()
+local VStackRight = HStack:VStack()
+
+local GroupViewportLeft = VStackLeft:Viewport({
+    Object = MakeCube(Color3.fromHex("#257AF7"), 2.5),
+    Interactive = true,
+    AutoRotate = true,
+    Height = 160,
+})
+
+local GroupViewportRight = VStackRight:Viewport({
+    Object = MakeSphere(Color3.fromHex("#30FF6A")),
+    Interactive = true,
+    Height = 160,
+})
+
+VStackLeft:Button({
+    Title = "Spin Left",
+    Justify = "Center",
+    Callback = function()
+        GroupViewportLeft:SetAutoRotate(not GroupViewportLeft.AutoRotate)
+    end,
+})
+
+VStackRight:Button({
+    Title = "Spin Right",
+    Justify = "Center",
+    Callback = function()
+        GroupViewportRight:SetAutoRotate(not GroupViewportRight.AutoRotate)
+    end,
+})
+
+-- viewport in a plain (borderless) group, full width
+local PlainGroup = GroupTab:Group()
+
+local GroupViewportWide = PlainGroup:Viewport({
+    Object = MakeStack(),
+    Interactive = true,
+    ShowGrid = true,
+    Height = 180,
+})
+
+PlainGroup:Button({
+    Title = "Swap Wide Object",
+    Icon = "refresh-ccw",
+    Justify = "Center",
+    Callback = function()
+        GroupViewportWide:SetObject(MakeCube(Color3.fromHex("#EF4F1D")))
+    end,
+})
+
+-- */  Tab 3: Viewport directly in Tab  /* --
+local PlainTab = Window:Tab({
+    Title = "In Tab",
+    Icon = "monitor",
+    Desc = "Viewport directly inside a Tab, no wrappers",
+})
+
+local PlainViewport = PlainTab:Viewport({
+    Object = MakeStack(),
     Interactive = true,
     AutoRotate = true,
     ShowGrid = true,
@@ -71,114 +179,59 @@ local Viewport = ViewportTab:Viewport({
         Color = Color3.fromRGB(255, 255, 255),
         Range = 30,
     },
-    Height = 280,
+    Height = 260,
 })
 
--- */  Camera Controls  /* --
-local CameraSection = ViewportTab:Section({
-    Title = "Camera Presets",
-    Icon = "camera",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
+PlainTab:Paragraph({
+    Title = "Controls",
+    Desc = "Drag — orbit  |  Scroll / Pinch — zoom  |  Shift+Drag / Right Click — pan",
 })
 
-local HStack = CameraSection:HStack()
-local VStackLeft = HStack:VStack()
-local VStackRight = HStack:VStack()
+local HStackPresets = PlainTab:HStack()
+local PresetLeft = HStackPresets:VStack()
+local PresetRight = HStackPresets:VStack()
 
-local function PresetButton(parent, title, preset)
-    parent:Button({
-        Title = title,
-        Justify = "Center",
-        Callback = function()
-            Viewport:SetCameraPreset(preset)
-        end,
-    })
-end
+PresetLeft:Button({
+    Title = "Isometric",
+    Justify = "Center",
+    Callback = function()
+        PlainViewport:SetCameraPreset("Isometric")
+    end,
+})
 
-PresetButton(VStackLeft, "Front", "Front")
-PresetButton(VStackLeft, "Left", "Left")
-PresetButton(VStackLeft, "Top", "Top")
-PresetButton(VStackRight, "Back", "Back")
-PresetButton(VStackRight, "Right", "Right")
-PresetButton(VStackRight, "Isometric", "Isometric")
+PresetLeft:Button({
+    Title = "Top",
+    Justify = "Center",
+    Callback = function()
+        PlainViewport:SetCameraPreset("Top")
+    end,
+})
 
-ViewportTab:Button({
-    Title = "Reset Camera",
+PresetRight:Button({
+    Title = "Front",
+    Justify = "Center",
+    Callback = function()
+        PlainViewport:SetCameraPreset("Front")
+    end,
+})
+
+PresetRight:Button({
+    Title = "Reset",
     Icon = "rotate-ccw",
     Justify = "Center",
     Callback = function()
-        Viewport:ResetCamera()
+        PlainViewport:ResetCamera()
     end,
 })
 
--- */  Behaviour Controls  /* --
-local SettingsSection = ViewportTab:Section({
-    Title = "Settings",
-    Icon = "settings",
-    Box = true,
-    BoxBorder = true,
-    Opened = true,
-})
-
-SettingsSection:Toggle({
-    Title = "Auto Rotate",
-    Desc = "Object spins on its own, pauses while you interact",
-    Value = true,
+PlainTab:Slider({
+    Title = "Height",
+    Min = 120,
+    Max = 400,
+    Value = 260,
     Callback = function(v)
-        Viewport:SetAutoRotate(v)
+        PlainViewport:SetHeight(v)
     end,
-})
-
-SettingsSection:Toggle({
-    Title = "Grid Floor",
-    Desc = "Reference grid under the object",
-    Value = true,
-    Callback = function(v)
-        Viewport:SetGrid(v)
-    end,
-})
-
-SettingsSection:Slider({
-    Title = "Field of View",
-    Min = 30,
-    Max = 110,
-    Value = 70,
-    Callback = function(v)
-        Viewport:SetFOV(v)
-    end,
-})
-
-SettingsSection:Slider({
-    Title = "Light Brightness",
-    Min = 0,
-    Max = 5,
-    Value = 2,
-    Callback = function(v)
-        Viewport:SetLighting({ Brightness = v })
-    end,
-})
-
-SettingsSection:Colorpicker({
-    Title = "Light Color",
-    Default = Color3.fromRGB(255, 255, 255),
-    Callback = function(color)
-        Viewport:SetLighting({ Color = color })
-    end,
-})
-
-SettingsSection:Button({
-    Title = "Replace Object",
-    Icon = "refresh-ccw",
-    Callback = function()
-        Viewport:SetObject(MakeDemoModel())
-    end,
-})
-
-ViewportTab:Paragraph({
-    Title = "Controls",
-    Desc = "Drag — orbit  |  Scroll / Pinch — zoom  |  Shift+Drag / Right Click — pan  |  Two-finger drag (mobile) — pan",
 })
 
 Window:SelectTab(1)
